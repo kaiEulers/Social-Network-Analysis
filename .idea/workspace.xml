@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="cd2d6373-29e3-4438-8e88-bf81f60c1480" name="Default Changelist" comment="" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DatabaseView">
+    <option name="SHOW_INTERMEDIATE" value="true" />
+    <option name="GROUP_DATA_SOURCES" value="true" />
+    <option name="GROUP_SCHEMA" value="true" />
+    <option name="GROUP_CONTENTS" value="false" />
+    <option name="SORT_POSITIONED" value="false" />
+    <option name="SHOW_EMPTY_GROUPS" value="false" />
+    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
+    <option name="HIDDEN_KINDS">
+      <set />
+    </option>
+    <expand />
+    <select />
+  </component>
+  <component name="FavoritesManager">
+    <favorites_list name="COMP90019_project" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/git" />
+  </component>
+  <component name="IgnoredFileRootStore">
+    <option name="generatedRoots">
+      <set>
+        <option value="$PROJECT_DIR$" />
+        <option value="$PROJECT_DIR$/.idea" />
+      </set>
+    </option>
+  </component>
+  <component name="ProjectId" id="1P84AUARP7rfzx3gk3I80EOM3HW" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="ChangesTree.GroupingKeys" value="directory&#10;repository" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="TODO_SCOPE" value="All Places" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+      <module name="proj" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="topicMod_NMF" type="PythonConfigurationType" factoryName="Python">
+      <module name="COMP9005_project" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/topicMod_NMF.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="cd2d6373-29e3-4438-8e88-bf81f60c1480" name="Default Changelist" comment="" />
+      <created>1564540219386</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1564540219386</updated>
+      <workItem from="1564540220526" duration="27000" />
+      <workItem from="1564540258534" duration="422000" />
+      <workItem from="1564709009317" duration="407000" />
+      <workItem from="1564905746378" duration="217000" />
+      <workItem from="1565055075908" duration="3426000" />
+      <workItem from="1565110292414" duration="118000" />
+      <workItem from="1565169599524" duration="187000" />
+      <workItem from="1565170192546" duration="4382000" />
+      <workItem from="1565177725951" duration="155000" />
+      <workItem from="1565177907042" duration="640000" />
+      <workItem from="1565178747533" duration="2996000" />
+      <workItem from="1565242251901" duration="444000" />
+      <workItem from="1565242712925" duration="597000" />
+      <workItem from="1565251286824" duration="1086000" />
+      <workItem from="1565252389631" duration="6315000" />
+      <workItem from="1565314705246" duration="7659000" />
+      <workItem from="1565408418728" duration="6684000" />
+      <workItem from="1565422065909" duration="2248000" />
+      <workItem from="1565445012043" duration="22000" />
+      <workItem from="1565445036525" duration="242000" />
+      <workItem from="1565445339519" duration="14196000" />
+      <workItem from="1565462849216" duration="1000" />
+      <workItem from="1565490903887" duration="3390000" />
+      <workItem from="1565494444211" duration="2195000" />
+      <workItem from="1565497022458" duration="2612000" />
+      <workItem from="1565499966808" duration="2306000" />
+      <workItem from="1565502422500" duration="4441000" />
+      <workItem from="1565538528260" duration="2320000" />
+      <workItem from="1565575782895" duration="594000" />
+      <workItem from="1565666713184" duration="1172000" />
+      <workItem from="1565750956185" duration="598000" />
+      <workItem from="1565925525635" duration="598000" />
+      <workItem from="1565948804453" duration="598000" />
+      <workItem from="1566009682300" duration="795000" />
+      <workItem from="1566132635805" duration="598000" />
+      <workItem from="1566188661766" duration="1614000" />
+      <workItem from="1566260961680" duration="597000" />
+      <workItem from="1566308341373" duration="583000" />
+      <workItem from="1566353777836" duration="4300000" />
+      <workItem from="1566440329444" duration="1277000" />
+      <workItem from="1566477699698" duration="450000" />
+      <workItem from="1566478166170" duration="1194000" />
+      <workItem from="1566523913406" duration="598000" />
+      <workItem from="1566612506455" duration="134000" />
+      <workItem from="1566612657929" duration="69000" />
+      <workItem from="1566612736153" duration="10854000" />
+      <workItem from="1566630909872" duration="67000" />
+      <workItem from="1566630988716" duration="23583000" />
+      <workItem from="1566664710445" duration="2828000" />
+      <workItem from="1566667967032" duration="159000" />
+      <workItem from="1566744836909" duration="2376000" />
+      <workItem from="1566786221369" duration="1191000" />
+      <workItem from="1566808471487" duration="13287000" />
+      <workItem from="1566840205680" duration="586000" />
+      <workItem from="1566872702678" duration="308000" />
+      <workItem from="1566873020055" duration="2111000" />
+      <workItem from="1566896529338" duration="471000" />
+      <workItem from="1566953883075" duration="166000" />
+      <workItem from="1566954252440" duration="338000" />
+      <workItem from="1566955443849" duration="3976000" />
+      <workItem from="1566982854991" duration="1556000" />
+      <workItem from="1567045244080" duration="1809000" />
+      <workItem from="1567248616815" duration="161000" />
+      <workItem from="1567248793511" duration="260000" />
+      <workItem from="1567322772271" duration="2859000" />
+      <workItem from="1567387369028" duration="831000" />
+      <workItem from="1567511300923" duration="15000" />
+      <workItem from="1567511326599" duration="1813000" />
+      <workItem from="1567557813504" duration="1828000" />
+      <workItem from="1567588613382" duration="62000" />
+      <workItem from="1567588722464" duration="10967000" />
+      <workItem from="1567599817923" duration="568000" />
+      <workItem from="1567600391918" duration="1565000" />
+    </task>
+    <task id="LOCAL-00001" summary="Initial commit">
+      <created>1565502549553</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1565502549553</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="LOCAL_CHANGES_DETAILS_PREVIEW_SHOWN" value="true" />
+    <ignored-roots>
+      <path value="$PROJECT_DIR$/SocialNetworkAnalysis" />
+      <path value="$PROJECT_DIR$/.." />
+      <path value="$PROJECT_DIR$" />
+      <path value="$PROJECT_DIR$/git" />
+      <path value="$PROJECT_DIR$/github" />
+    </ignored-roots>
+    <MESSAGE value="Initial commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="Initial commit" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/COMP90019_project$topicMod_NMF.coverage" NAME="topicMod_NMF Coverage Results" MODIFIED="1566660679429" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/COMP90019_project$proj.coverage" NAME="proj Coverage Results" MODIFIED="1565525703194" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+  </component>
+</project>

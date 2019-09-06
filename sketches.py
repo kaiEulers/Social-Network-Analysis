@@ -65,8 +65,25 @@ nx.degree_centrality(MG)
 
 pos = nx.spring_layout(MG)
 nx.draw_networkx(MG)
-# nx.draw_networkx_edge_labels(MG, pos)
 plt.show()
+
+
+#%% Re-write node attribute
+G = nx.Graph()
+G.clear()
+
+G.add_node(0, time=5)
+G.node.data()
+G.add_node(0, time=+1)
+G.nodes.data()
+
+# USE G.node.data() TO EXTRACT ALL NODES AND ITS DATA AS A DICTIONARY!!!
+D = G.nodes.data()
+D[0]['time']
+
+nx.draw_networkx(G)
+plt.show()
+
 
 #%% Data Quantities
 data = pd.read_csv(f"/Users/kaisoon/Google Drive/Code/Python/COMP90055_project/data/ssm_cleaned.csv")
@@ -85,13 +102,16 @@ data_2017_12.shape[0]/data.shape[0]
 # Percentage of dataset after topic modelling filter
 results.shape[0]/data_2017_12.shape[0]
 
-#%%
-e = 5
-d = 23
+#%% To get node and edge attributes from graph...
+# To get node attributes
+att = 'Party'
+D1 = nx.get_node_attributes(G, att)
+# get_node_attributes() returns a dict with node name as key and the attribute as value
 
-n = 39
-M = 10
-C = M**e%n
-print(f"C = {C}")
-M = C**d%n
-print(f"M = {M}")
+# To get edge attributes
+p1 = 'Warren Entsch'
+p2 = 'Bill Shorten'
+D2 = G.get_edge_data(p1, p2)
+# MultiGraph.get_edge_data() returns a dict containing all edges drawn between two actors. De-referencing each edge returns another dict with the atribtue name as key and the its corresponding value
+D2[0]
+D2[0]['SpeechData']

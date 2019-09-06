@@ -106,9 +106,10 @@ for d in day:
             temp = temp.append(data.iloc[i])
     temp.to_csv(f"data/{re.sub('.csv', '', FILE_NAME)}-{d}.csv", index=False)
 
+
 #%% ----- Divide results by the DAY the speech was made
 FILE_NAME = "ssm_results_NMF_senti_2017-12.csv"
-data = pd.read_csv(f"data/results/{FILE_NAME}")
+data = pd.read_csv(f"results/{FILE_NAME}")
 # Extract all unique days that speeches were made
 day = pd.Series([d[8:10] for d in data['Date']]).unique()
 # Divide speech made in different years in different files
@@ -117,6 +118,6 @@ for d in day:
     for i in data.index:
         if data.iloc[i]['Date'][8:10] == d:
             temp = temp.append(data.iloc[i])
-    temp.to_csv(f"data/results/{re.sub('.csv', '', FILE_NAME)}-{d}.csv", index=False)
+    temp.to_csv(f"results/{re.sub('.csv', '', FILE_NAME)}-{d}.csv", index=False)
 
 

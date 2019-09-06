@@ -9,11 +9,13 @@ import re
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.decomposition import NMF
 
+FILE_NAME = "ssm_cleaned_2017-12.csv"
+data = pd.read_csv(f"data/{FILE_NAME}")
+
+
 #%%---------- Topic Modelling using Non-negative Matrix Factorisation(NMF)
 # ----- Modelling topics for speeches made in the month of 2017-12
 nTOPICS = 3
-FILE_NAME = "ssm_cleaned_2017-12.csv"
-data = pd.read_csv(f"data/{FILE_NAME}")
 
 # Instantiate Tfidf model
 tfidf = TfidfVectorizer(max_df=0.9, min_df=2, stop_words='english')
@@ -49,6 +51,8 @@ for row in topic_results_nmf:
 
 # Find difference between coefficients
 # Small difference means that speech involves 2 or more topics!
+# TODO: Rename diff_12 to topicCoeff_diff
+# TODO: Remove diff_23
 diff_12 = pd.Series(np.zeros(len(topic_results_nmf)))
 diff_23 = pd.Series(np.zeros(len(topic_results_nmf)))
 
@@ -104,7 +108,7 @@ results["Speech"] = speeches
 results = results.dropna()
 
 # Save results
-results.to_csv(f"data/results/{re.sub('cleaned', 'results_NMF', FILE_NAME)}", index=False)
+results.to_csv(f"results/{re.sub('cleaned', 'results_NMF', FILE_NAME)}", index=False)
 
 
 # ----- Analyse results from NMF topic modelling
@@ -132,7 +136,7 @@ print()
 print(f'{round(diff_perc * 100, 2)}% of speeches have similar coeff values for their top two topics')
 
 # Save topics and analysis_nmf
-topics_nmf.to_csv(f"data/results/{re.sub('cleaned', 'topics_NMF', FILE_NAME)}")
+topics_nmf.to_csv(f"results/{re.sub('cleaned', 'topics_NMF', FILE_NAME)}")
 
 
 #%% Plots
@@ -142,10 +146,7 @@ sns.set_context("notebook")
 # ----- Plot distribution of coeff difference
 fig = plt.figure(dpi=300)
 
-plt.subplot(1, 2, 1)
-ax1 = sns.distplot(diff['diff_12'], bins=5, kde=True, norm_hist=False)
-plt.subplot(1, 2, 2)
-ax2 = sns.distplot(diff['diff_23'], bins=5, kde=True, norm_hist=False)
+sns.distplot(diff['diff_12'], bins=5, kde=True, norm_hist=False)
 plt.show()
 
 # fig.savefig(f"/Users/kaisoon/Google Drive/Code/Python/COMP90055_project/figures/{re.sub('cleaned', 'hist_coeffDiff', FILE_NAME)}", dpi=300)

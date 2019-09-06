@@ -5,13 +5,13 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import re
-
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
-#%%---------- Sentiment Analysis
 FILE_NAME = "ssm_results_NMF_2017-12.csv"
-results = pd.read_csv(f"data/results/{FILE_NAME}")
+results = pd.read_csv(f"results/{FILE_NAME}")
 
+
+#%%---------- Sentiment Analysis
 sid = SentimentIntensityAnalyzer()
 
 senti = pd.DataFrame(columns="pos neu neg compound".split())
@@ -35,7 +35,7 @@ results['Senti_comp'] = senti['compound']
 results['Speech'] = speeches
 
 # Save results
-results.to_csv(f"data/results/{re.sub('NMF', 'NMF_senti', FILE_NAME)}", index=False)
+results.to_csv(f"results/{re.sub('NMF', 'NMF_senti', FILE_NAME)}", index=False)
 
 
 #%% Analyse Results

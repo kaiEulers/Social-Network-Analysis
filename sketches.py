@@ -31,9 +31,19 @@ df = pd.DataFrame(np.array([
     columns='col1 col2 col3'.split()
 )
 
-for index,row in df.iterrows():
-    print(index)
-    print(row, '\n')
+# # Use df.iterrows() to return an iterator that iterates through rows
+# for index,row in df.iterrows():
+#     print(index)
+#     print(row)
+
+# # Use df.iterritems() to return an iterator that iterates through columns
+# for index,col in df.iteritems():
+#     print(index)
+#     print(col, '\n')
+
+# Use df.itertuples() to return an iterator that iterates through rows as tuples
+for i in df.itertuples():
+    print(i)
 
 
 #%% Change datatype of dataframes
@@ -51,22 +61,24 @@ MG.add_node('a')
 MG.add_node('b')
 MG.add_node('c')
 
-MG. add_edge('a', 'b')
-MG. add_edge('a', 'b')
-MG. add_edge('a', 'c')
+MG. add_edge('a', 'b', colour='red')
+MG. add_edge('a', 'b', colour='green')
+MG. add_edge('a', 'c', colour='blue')
 # MG.add_weighted_edges_from([
 #     ('a', 'b', 1),
 #     ('a', 'b', 1),
 #     ('a', 'c', 1)
 # ])
 
-MG.degree()
-nx.degree_centrality(MG)
+# MG.degree()
+# nx.degree_centrality(MG)
 
 pos = nx.spring_layout(MG)
 nx.draw_networkx(MG)
 plt.show()
 
+E = list(MG.edges.data())
+print(E)
 
 #%% Re-write node attribute
 G = nx.Graph()

@@ -1,4 +1,7 @@
-#%% Imports & Functions
+"""
+@author: kaisoon
+"""
+# Imports & Functions
 import math
 import numpy as np
 import pandas as pd
@@ -7,23 +10,28 @@ import seaborn as sns
 import re
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
-FILE_NAME = "ssm_results_NMF_2017-12.csv"
-results = pd.read_csv(f"results/{FILE_NAME}")
-
 
 #%%---------- Sentiment Analysis
+DATE = '2017-12'
+FILE_NAME = f"ssm_{DATE}_results_NMF.csv"
+results = pd.read_csv(f"results/{FILE_NAME}")
+
 sid = SentimentIntensityAnalyzer()
 
 senti = pd.DataFrame(columns="pos neu neg compound".split())
 # ----- Analyse sentiment of all speeches
+print("Analysing sentiment...")
+# If topic is not nan, analyse sentiment. Otherwise, sentiment is also nan.
 for i in results.index:
-    # Analyse Sentiment
-    score = sid.polarity_scores(results.iloc[i]["Speech"])
-    senti = senti.append(score, ignore_index=True)
+    speech = results.loc[i]["Speech"]
+    score = sid.polarity_scores(speech)
+    senti.loc[i] = score
 
     # Print progress
     if i % 20 == 0:
-        print(f"{i} of {len(results)}\t{score}")
+        print(f"{i:{5}} of {len(results):{5}}\t{score}")
+print("Sentiment analysis complete!")
+
 
 # ----- Concat sentiments with results
 speeches = results['Speech']

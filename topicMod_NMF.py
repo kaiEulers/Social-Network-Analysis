@@ -1,20 +1,23 @@
-#%% -----Imports
+"""
+@author: kaisoon
+"""
+# -----Imports
 import numpy as np
 from scipy import stats as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-import re
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.decomposition import NMF
 
-FILE_NAME = "ssm_cleaned_2017-12.csv"
-data = pd.read_csv(f"data/{FILE_NAME}")
-
 
 #%%---------- Topic Modelling using Non-negative Matrix Factorisation(NMF)
 # ----- Modelling topics for speeches made in the month of 2017-12
+DATE = '2017-12'
+FILE_NAME = f"ssm_{DATE}_cleaned.csv"
+data = pd.read_csv(f"data/{FILE_NAME}")
+# TODO: Need to model more topics!
 nTOPICS = 3
 
 # Instantiate Tfidf model
@@ -22,7 +25,7 @@ tfidf = TfidfVectorizer(max_df=0.9, min_df=2, stop_words='english')
 # Instantiate NMF model
 nmf_model = NMF(n_components=nTOPICS)
 
-
+print("Modelling topic with NMF...")
 # ----- Create document term matrix with tfidf model
 dtm = tfidf.fit_transform(data['Speech'])
 
@@ -32,7 +35,7 @@ nmf_model.fit(dtm)
 # nmf_model.transform() returns a matrix with coefficients that shows how much each document belongs to each topic
 topic_results_nmf = nmf_model.transform(dtm)
 
-# Store top w words in dataframe topics_nmf
+# Store top w words in dataFrame topics_nmf
 # Number of words that describes topic
 w = 15
 topics_nmf = pd.DataFrame()
@@ -41,9 +44,11 @@ for index,topic in enumerate(nmf_model.components_):
     topWordsIndex = (-topic).argsort()[:w]
     topics_nmf = topics_nmf.append(pd.Series([tfidf.get_feature_names()[i] for i in topWordsIndex]), ignore_index=True)
 topics_nmf = topics_nmf.transpose()
+print("NMF topic modelling complete!")
 
 
 # ----- Determine difference in coefficient such that speeches can be class as invovling have one or more topics
+print("\nComputing difference in top-two topic coefficients...")
 # Rank the topics that each speech is about
 rank = []
 for row in topic_results_nmf:
@@ -72,6 +77,7 @@ for i in range(len(topic_results_nmf)):
 # Concat all differences
 diff = pd.concat([diff_12, diff_23], axis=1)
 diff.columns = 'diff_12 diff_23'.split()
+print("Computing of difference complete!")
 
 
 # ----- Determine threshold to class speeches as having more than one topic
@@ -104,11 +110,11 @@ results = data.drop('Speech', axis=1)
 results["Topic_nmf"] = topic_assigned_nmf
 results["Speech"] = speeches
 
-# Remove speechs that contains two or more topics
-results = results.dropna()
+# Remove rows that contains two or more topics
+results = results.dropna().reset_index(drop=True)
 
 # Save results
-results.to_csv(f"results/{re.sub('cleaned', 'results_NMF', FILE_NAME)}", index=False)
+results.to_csv(f"results/{FILE_NAME.replace('cleaned', 'results_NMF')}", index=False)
 
 
 # ----- Analyse results from NMF topic modelling
@@ -125,18 +131,17 @@ analysis_nmf["Percentage"] = [round(cnt/sum(analysis_nmf["SpeechCount"]), 2) for
 # Concat analysis_nmf to topics_nmf
 topics_nmf = topics_nmf.append(analysis_nmf["Percentage"])
 topics_nmf = topics_nmf.append(analysis_nmf["SpeechCount"])
-print(topics_nmf)
+print("\n", topics_nmf)
 
 # Percentage of speeches with two and three similar topic coefficient values
 num_thres = len(diff[diff['diff_12'] < coeffDiff_thres])
 num_total = len(topic_results_nmf)
 diff_perc = (num_thres) / num_total
 
-print()
-print(f'{round(diff_perc * 100, 2)}% of speeches have similar coeff values for their top two topics')
+print(f"\n{round(diff_perc * 100, 2)}% of speeches have similar coeff values for their top two topics")
 
 # Save topics and analysis_nmf
-topics_nmf.to_csv(f"results/{re.sub('cleaned', 'topics_NMF', FILE_NAME)}")
+topics_nmf.to_csv(f"results/{FILE_NAME.replace('cleaned', 'topics_NMF')}")
 
 
 #%% Plots
@@ -149,5 +154,4 @@ fig = plt.figure(dpi=300)
 sns.distplot(diff['diff_12'], bins=5, kde=True, norm_hist=False)
 plt.show()
 
-# fig.savefig(f"/Users/kaisoon/Google Drive/Code/Python/COMP90055_project/figures/{re.sub('cleaned', 'hist_coeffDiff', FILE_NAME)}", dpi=300)
-fig.savefig(f"figures/ssm_2017-12_coeffDiff.png", dpi=300)
+fig.savefig(f"results/{FILE_NAME.replace('cleaned.csv', 'coeffDiff.png')}", dpi=300)

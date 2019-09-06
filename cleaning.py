@@ -1,4 +1,7 @@
-#%% Imports and Functions
+"""
+@author: kaisoon
+"""
+# ----- Imports and Functions
 import numpy as np
 import pandas as pd
 import re
@@ -76,10 +79,12 @@ for y in year:
     for i in data.index:
         if data.iloc[i]['Date'][:4] == y:
             temp = temp.append(data.iloc[i], ignore_index=True)
-    temp.to_csv(f"data/{re.sub('.csv', '', FILE_NAME)}_{y}.csv", index=False)
+    temp.to_csv(f"data/{FILE_NAME.replace('cleaned', y + '_cleaned')}", index=False)
+
 
 #%% ----- Divide data by the MONTH that the speech was made
-FILE_NAME = "ssm_cleaned_2017.csv"
+YEAR = '2017'
+FILE_NAME = f"ssm_{YEAR}_cleaned.csv"
 data = pd.read_csv(f"data/{FILE_NAME}")
 
 # Extract all unique months that speeches were made
@@ -90,10 +95,12 @@ for m in month:
     for i in data.index:
         if data.iloc[i]['Date'][5:7] == m:
             temp = temp.append(data.iloc[i], ignore_index=True)
-    temp.to_csv(f"data/{re.sub('.csv', '', FILE_NAME)}-{m}.csv", index=False)
+    temp.to_csv(f"data/{FILE_NAME.replace('_cleaned', '-' + m + '_cleaned')}", index=False)
+
 
 #%% ----- Divide data by the DAY that the speech was made
-FILE_NAME = "ssm_cleaned_2017-12.csv"
+YEAR_MONTH = '2017-12'
+FILE_NAME = f"ssm_{YEAR_MONTH}_cleaned.csv"
 data = pd.read_csv(f"data/{FILE_NAME}")
 
 # Extract all unique days that speeches were made
@@ -104,12 +111,14 @@ for d in day:
     for i in data.index:
         if data.iloc[i]['Date'][8:10] == d:
             temp = temp.append(data.iloc[i])
-    temp.to_csv(f"data/{re.sub('.csv', '', FILE_NAME)}-{d}.csv", index=False)
+    temp.to_csv(f"data/{FILE_NAME.replace('_cleaned', '-' + d + '_cleaned')}", index=False)
 
 
 #%% ----- Divide results by the DAY the speech was made
-FILE_NAME = "ssm_results_NMF_senti_2017-12.csv"
+YEAR_MONTH = '2017-12'
+FILE_NAME = f"ssm_{YEAR_MONTH}_results_NMF_senti.csv"
 data = pd.read_csv(f"results/{FILE_NAME}")
+
 # Extract all unique days that speeches were made
 day = pd.Series([d[8:10] for d in data['Date']]).unique()
 # Divide speech made in different years in different files
@@ -118,6 +127,6 @@ for d in day:
     for i in data.index:
         if data.iloc[i]['Date'][8:10] == d:
             temp = temp.append(data.iloc[i])
-    temp.to_csv(f"results/{re.sub('.csv', '', FILE_NAME)}-{d}.csv", index=False)
+    temp.to_csv(f"data/{FILE_NAME.replace('_results', '-' + d + '_results')}", index=False)
 
 

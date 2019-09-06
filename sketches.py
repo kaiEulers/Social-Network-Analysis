@@ -31,6 +31,8 @@ df = pd.DataFrame(np.array([
     columns='col1 col2 col3'.split()
 )
 
+df.drop(0)
+
 # # Use df.iterrows() to return an iterator that iterates through rows
 # for index,row in df.iterrows():
 #     print(index)

@@ -138,7 +138,13 @@ nx.write_gpickle(G, f"results/{FILE_NAME.replace('NMF_senti.csv', 'graph.gpickle
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+# TODO: How should I determine the centrality threshold?
+CENT_THRES = 0.75
+cent[cent['Degree'] > CENT_THRES]
 
+cent = pd.read_csv("results/ssm_2017-12_results_centrality.csv")
+cent.shape
 
-sns.distplot(pd.Series(cent), bins=5, kde=False, norm_hist=True)
+sns.distplot(pd.Series(cent['Degree']), kde=False)
 plt.show()
+

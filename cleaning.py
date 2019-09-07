@@ -10,24 +10,26 @@ import re
 def clean_name(name):
     import re
     # Remove ', MP'
-    name = re.sub(', MP', '', name)
+    name = name.replace(', MP', '')
 
     # Search for first name - all letters after ', '
     firstName = re.search(', .*', name)
     firstName = firstName.group(0)
     # Remove ', ' from firstName
-    firstName = re.sub(', ', '', firstName)
+    firstName = firstName.replace(', ', '')
 
     # Search for last name
     lastName = re.search('.*, ', name)
     lastName = lastName.group(0)
     # Remove ', ' from lastName
-    lastName = re.sub(', ', '', lastName)
+    lastName = lastName.replace(', ', '')
 
     # Join firstName and lastName
     name_cleaned = ' '.join([firstName, lastName])
 
     return name_cleaned
+
+
 #%% ---------- Clean Data
 FILE_NAME = "marriage_bills_para_short_cleaned.csv"
 data = pd.read_csv(f"data/raw/{FILE_NAME}")
@@ -45,7 +47,7 @@ for sID in speechIds:
         fullSpeech = fullSpeech + p
 
     # Replace all "per cent" in speeches with "percent"
-    fullSpeech = re.sub('per cent', 'percent', fullSpeech)
+    fullSpeech = fullSpeech.replace('per cent', 'percent')
 
     # Assemble all data for a row
     row = [
@@ -130,3 +132,4 @@ for d in day:
     temp.to_csv(f"data/{FILE_NAME.replace('_results', '-' + d + '_results')}", index=False)
 
 
+#%%

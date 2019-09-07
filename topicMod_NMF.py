@@ -56,10 +56,7 @@ for row in topic_results_nmf:
 
 # Find difference between coefficients
 # Small difference means that speech involves 2 or more topics!
-# TODO: Rename diff_12 to topicCoeff_diff
-# TODO: Remove diff_23
-diff_12 = pd.Series(np.zeros(len(topic_results_nmf)))
-diff_23 = pd.Series(np.zeros(len(topic_results_nmf)))
+topicCoeff = pd.Series(np.zeros(len(topic_results_nmf)))
 
 for i in range(len(topic_results_nmf)):
     # Extract top coefficients
@@ -70,26 +67,20 @@ for i in range(len(topic_results_nmf)):
         max[j] = topic_results_nmf[i][rank[i][-j-1]]
 
     # Compute difference between highest and 2nd highest coeff
-    diff_12[i] = max[0]-max[1]
-    # Compute difference between 2nd highest and 3rd highest coeff
-    diff_23[i] = max[1]-max[2]
+    topicCoeff[i] = max[0] - max[1]
 
-# Concat all differences
-diff = pd.concat([diff_12, diff_23], axis=1)
-diff.columns = 'diff_12 diff_23'.split()
 print("Computing of difference complete!")
 
 
 # ----- Determine threshold to class speeches as having more than one topic
 SIG_LEVEL = 0.1
-stats = diff.describe()
+CoeffStats = topicCoeff.describe()
 # Depending on the threshold of difference between coefficients, speeeches can be assigned to more than one topics
 # thres_12 is the difference in coefficient between the highest and 2nd highest topic for speech to be considered to be about both topics. If the different is this value or less, speech will be about both topics.
 # thres_12 is statistically determined, assuming that the difference in topic coefficient exhibits a normal distribution
-# TODO: Empirically determine threshold (ie. sort all diff_12 and find the difference at 10% of the data)
-mean_12 = stats['diff_12']['mean']
-std_12 = stats['diff_12']['std']
-coeffDiff_thres = std_12 * st.norm.ppf(SIG_LEVEL) + mean_12
+# TODO: Empirically determine threshold??? (ie. sort all topicCoeff and find the difference at 10% of the data)
+# TODO: Try finding the difference relative to min coeff. Want to remove small differences!
+coeffDiff_thres = CoeffStats['std'] * st.norm.ppf(SIG_LEVEL) + CoeffStats['mean']
 
 
 # ----- Assign topic/s to each speech
@@ -97,8 +88,7 @@ topic_assigned_nmf = pd.Series(np.empty(len(topic_results_nmf)))
 topic_assigned_nmf[:] = np.nan
 
 for i in range(len(topic_results_nmf)):
-
-    if diff_12[i] < coeffDiff_thres:
+    if topicCoeff[i] < coeffDiff_thres:
         topic_assigned_nmf[i] = np.nan
     else:
         topic_assigned_nmf[i] = topic_results_nmf[i].argmax()
@@ -133,12 +123,12 @@ topics_nmf = topics_nmf.append(analysis_nmf["Percentage"])
 topics_nmf = topics_nmf.append(analysis_nmf["SpeechCount"])
 print("\n", topics_nmf)
 
-# Percentage of speeches with two and three similar topic coefficient values
-num_thres = len(diff[diff['diff_12'] < coeffDiff_thres])
+# Percentage of speeches similar top two topic coefficients
+num_thres = len(topicCoeff[topicCoeff < coeffDiff_thres])
 num_total = len(topic_results_nmf)
 diff_perc = (num_thres) / num_total
 
-print(f"\n{round(diff_perc * 100, 2)}% of speeches have similar coeff values for their top two topics")
+print(f"\n{round(diff_perc * 100, 2)}% of speeches have similar coefficients for their top two topics")
 
 # Save topics and analysis_nmf
 topics_nmf.to_csv(f"results/{FILE_NAME.replace('cleaned', 'topics_NMF')}")

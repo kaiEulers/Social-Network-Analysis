@@ -56,6 +56,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="run.code.analysis.last.selected.profile" value="aDefault" />
     <property name="settings.editor.selected.configurable" value="preferences.keymap" />
   </component>
   <component name="RunDashboard">
@@ -214,7 +215,18 @@
       <workItem from="1567751999179" duration="13754000" />
       <workItem from="1567766711323" duration="4634000" />
       <workItem from="1567771650933" duration="8547000" />
-      <workItem from="1567780336217" duration="3397000" />
+      <workItem from="1567780336217" duration="11914000" />
+      <workItem from="1567822492560" duration="1198000" />
+      <workItem from="1567823713651" duration="1792000" />
+      <workItem from="1567825511649" duration="2541000" />
+      <workItem from="1567828070008" duration="5974000" />
+      <workItem from="1567834276163" duration="321000" />
+      <workItem from="1567834842497" duration="2422000" />
+      <workItem from="1567837555057" duration="2669000" />
+      <workItem from="1567840383713" duration="605000" />
+      <workItem from="1567840999997" duration="60000" />
+      <workItem from="1567841070820" duration="61000" />
+      <workItem from="1567841142575" duration="28526000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit">
       <created>1565502549553</created>

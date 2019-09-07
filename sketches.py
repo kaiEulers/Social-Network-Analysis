@@ -1,11 +1,9 @@
 #%% ----- Imports
-import math
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import networkx as nx
-import re
 
 
 #%% THIS IS HOW YOU APPEND ROW TO DATAFRAMES!!
@@ -55,47 +53,60 @@ df.dtypes
 df.iloc[0]['A'] = [1,2,3]
 
 
-#%% MultiGraph
-MG = nx.MultiGraph()
-MG.clear()
+#%% Graph
+TG = nx.Graph()
+TG.clear()
 
-MG.add_node('a')
-MG.add_node('b')
-MG.add_node('c')
+TG.add_node('a')
+TG.add_node('b')
+TG.add_node('c')
 
-MG. add_edge('a', 'b', colour='red')
-MG. add_edge('a', 'b', colour='green')
-MG. add_edge('a', 'c', colour='blue')
-# MG.add_weighted_edges_from([
-#     ('a', 'b', 1),
-#     ('a', 'b', 1),
-#     ('a', 'c', 1)
-# ])
+TG.add_edge('a', 'b', colour='red', n=1)
+TG.add_edge('b', 'c', colour='green', n=2)
+TG.add_edge('a', 'c', colour='blue', n=3)
 
-# MG.degree()
-# nx.degree_centrality(MG)
+# To get all attributes from an edge
+edgeData = TG.get_edge_data('a', 'c')
 
-pos = nx.spring_layout(MG)
-nx.draw_networkx(MG)
+# To get one attribute from all edges
+nx.get_edge_attributes(TG, 'colour')
+
+TG.add_edge('a', 'c', colour='pink')
+print(TG.edges.data())
+
+pos = nx.spring_layout(TG)
+nx.draw_networkx(TG)
 plt.show()
 
-E = list(MG.edges.data())
-print(E)
+# To get all edges adjacent to a node
+TG.edges('a')
+
+
+
+#%%
+D1 = {'a': 1, 'b': 2, 'c': 3}
+D2 = {'d': 4, 'e': 5, 'f': 6}
+
+D = [D1, D2]
+
+
+
+
 
 #%% Re-write node attribute
-G = nx.Graph()
-G.clear()
+TG = nx.Graph()
+TG.clear()
 
-G.add_node(0, time=5)
-G.node.data()
-G.add_node(0, time=+1)
-G.nodes.data()
+TG.add_node(0, time=5)
+TG.node.data()
+TG.add_node(0, time=+1)
+TG.nodes.data()
 
-# USE G.node.data() TO EXTRACT ALL NODES AND ITS DATA AS A DICTIONARY!!!
-D = G.nodes.data()
+# USE TG.node.data() TO EXTRACT ALL NODES AND ITS data AS A DICTIONARY!!!
+D = TG.nodes.data()
 D[0]['time']
 
-nx.draw_networkx(G)
+nx.draw_networkx(TG)
 plt.show()
 
 
@@ -119,13 +130,35 @@ results.shape[0]/data_2017_12.shape[0]
 #%% To get node and edge attributes from graph...
 # To get node attributes
 att = 'Party'
-D1 = nx.get_node_attributes(G, att)
+D1 = nx.get_node_attributes(TG, att)
 # get_node_attributes() returns a dict with node name as key and the attribute as value
 
 # To get edge attributes
 p1 = 'Warren Entsch'
 p2 = 'Bill Shorten'
-D2 = G.get_edge_data(p1, p2)
+D2 = TG.get_edge_data(p1, p2)
 # MultiGraph.get_edge_data() returns a dict containing all edges drawn between two actors. De-referencing each edge returns another dict with the atribtue name as key and the its corresponding value
-D2[0]
-D2[0]['SpeechData']
+
+
+#%%
+# TODO: Write function to group edge weight into five classes of magnitude
+import numpy as np
+N = 5
+# Extract all egdes with weights attribtes from graph
+weights = nx.get_edge_attributes(G, 'weight')
+# Compute weight relative to max weight
+weight_relMax = {k : v/max(weights.values()) for (k, v) in weights.items()}
+
+grouped = {}
+grouped[0] = [k for k,v in weight_relMax.items() if v >= 0 and v < 0.2]
+grouped[1] = [k for k,v in weight_relMax.items() if v >= 0.2 and v < 0.4]
+grouped[2] = [k for k,v in weight_relMax.items() if v >= 0.4 and v < 0.6]
+grouped[3] = [k for k,v in weight_relMax.items() if v >= 0.6 and v < 0.8]
+grouped[4] = [k for k,v in weight_relMax.items() if v >= 0.8]
+
+
+for k in range(5):
+    print(len(grouped[k]))
+
+S = pd.Series(weight_relMax).sort_values(ascending=False)
+S = pd.Series(weights).sort_values(ascending=False)

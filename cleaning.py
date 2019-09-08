@@ -4,7 +4,6 @@
 # ----- Imports and Functions
 import numpy as np
 import pandas as pd
-import re
 
 # Function to clean up MP names
 def clean_name(name):

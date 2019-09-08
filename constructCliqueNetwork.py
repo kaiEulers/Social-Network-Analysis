@@ -6,8 +6,9 @@ import numpy as np
 import pandas as pd
 import networkx as nx
 import json
+import pickle
 import time
-import drawGraph
+import kaiGraph as kg
 import importlib
 
 
@@ -19,8 +20,10 @@ FILE_NAME_GRAPH = FILE_NAME.replace('NMF_senti.csv', 'weightedGraph.gpickle')
 
 results = pd.read_csv(f"results/{FILE_NAME}")
 G = nx.read_gpickle(f"results/{FILE_NAME_GRAPH}")
-with open(f"results/{FILE_NAME.replace('NMF_senti.csv', 'cliques.json')}", "r") as file:
-    cliqueDict = json.load(file)
+# with open(f"results/{FILE_NAME.replace('NMF_senti.csv', 'cliques.json')}", "r") as file:
+#     cliqueDict = json.load(file)
+with open(f"results/{FILE_NAME.replace('NMF_senti.csv', 'cliques.pickle')}", "rb") as file:
+    cliqueDict = pickle.load(file)
 
 # ----- Construct clique graphs
 # Get centrality and cliqueNum data
@@ -28,8 +31,8 @@ centDict = nx.get_node_attributes(G, 'centrality')
 cliqueNumDict = nx.get_node_attributes(G, 'cliques')
 
 CGs = {}
-CG = nx.Graph()
 for k in cliqueDict.keys():
+    CG = nx.Graph()
     CG.clear()
     clique = cliqueDict[k]
 
@@ -69,15 +72,19 @@ for k in cliqueDict.keys():
 
 
 # Save clique graph
-nx.write_gpickle(CGs, f"results/{FILE_NAME_GRAPH.replace('graph', 'cliqueGraph' + k)}")
-print(f"\nClique graph construction complete! Construction took {time.time()-startTime}s!")
+nx.write_gpickle(CGs, f"results/{FILE_NAME_GRAPH.replace('weightedGraph', 'cliqueGraph')}")
+print(f"\nClique graph construction complete! Construction took {round(time.time()-startTime, 2)}s")
 
 
 #%%
-# TODO: Draw clique graphs
-importlib.reload(drawGraph)
+import matplotlib.pyplot as plt
+import kaiGraph as kg
+importlib.reload(kg)
 
-for CG in CGs.keys():
-    fig = drawGraph.draw(CG)
-    fig.show()
-
+FIG_SiZE = 4
+fig = plt.figure(figsize=(FIG_SiZE * 3, FIG_SiZE * 2), dpi=300, tight_layout=True)
+# Draw cliqueGraphs in subplots
+for k,gph in CGs.items():
+    plt.subplot(221 + k)
+    kg.drawGraph(gph, title=f"{DATE} Clique{k}", legend=False, node_size=5, font_size=6)
+plt.show()

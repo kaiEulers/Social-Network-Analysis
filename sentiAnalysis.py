@@ -6,17 +6,18 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-import re
+import time
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 
 #%%---------- Sentiment Analysis
+startTime = time.time()
 DATE = '2017-12'
 FILE_NAME = f"ssm_{DATE}_results_NMF.csv"
 results = pd.read_csv(f"results/{FILE_NAME}")
 
-sid = SentimentIntensityAnalyzer()
 
+sid = SentimentIntensityAnalyzer()
 senti = pd.DataFrame(columns="pos neu neg compound".split())
 # ----- Analyse sentiment of all speeches
 print("Analysing sentiment...")
@@ -29,7 +30,7 @@ for i in results.index:
     # Print progress
     if i % 20 == 0:
         print(f"{i:{5}} of {len(results):{5}}\t{score}")
-print("Sentiment analysis complete!")
+print(f"Sentiment analysis complete! Analysis took {time.time()-startTime}s")
 
 
 # ----- Concat sentiments with results
@@ -42,7 +43,7 @@ results['Senti_comp'] = senti['compound']
 results['Speech'] = speeches
 
 # Save results
-results.to_csv(f"results/{re.sub('NMF', 'NMF_senti', FILE_NAME)}", index=False)
+results.to_csv(f"results/{FILE_NAME.replace('NMF', 'NMF_senti')}", index=False)
 
 
 #%% Analyse Results

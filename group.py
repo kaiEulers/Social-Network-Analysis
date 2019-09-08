@@ -17,7 +17,7 @@ def byThres(data, thres):
 
     return grouped
 
-def bySeq5(data):
+def byOrd5(data):
     """
     bySeq5() groups data in five sequential classes
     :param data: is a dict
@@ -54,7 +54,7 @@ def byNodeAttr(G, groupby):
 
     # ----- Group actors by attribute
     grouped = {}
-    # Load attributes from graph
+    # # Load attributes from graph
     data = nx.get_node_attributes(G, groupby)
     # Construct a set of unique groups
     groups = list(set(data.values()))
@@ -115,6 +115,41 @@ def byNodeAttr(G, groupby):
         raise ValueError('Attribute must be one of the following: Party, Gender, Metro')
 
 
+def byNodeCent(G, thres):
+    """
+    byNodeAttr() group nodes in a graph according to its attribute
+    :param G is a graph constructed with networkx
+    Returns 2 dicts and a list
+    :returns grouped is a dict of each attributes mapped to all actors associated with that attribute
+    :returns colouMap is a dict of the colour-map of grouped edges. The colour-map is used to colour the network graph.
+    :returns legendMap is a dict of legend names used for the network graph
+    """
+    import networkx as nx
+    import colourPals as cp
+    import importlib
+    importlib.reload(cp)
+
+    # ----- Group actors by attribute
+    # Load attributes from graph
+    data = nx.get_node_attributes(G, 'centrality')
+    # Split data at centrality threshold
+    grouped = byThres(data, thres)
+
+    edgeColourMap = {
+        0: 'black',
+        1: 'black',
+    }
+    edgeWidthScaleMap = {
+        0: 1,
+        1: 2,
+    }
+    nodeScaleMap = {
+        0: 1,
+        1: 2,
+    }
+    return grouped, nodeScaleMap, edgeColourMap, edgeWidthScaleMap
+
+
 def byEdgeWeight(G):
     """
     byEdgeWeight() group edges in a graph according to its weight
@@ -134,7 +169,7 @@ def byEdgeWeight(G):
     # Compute weight relative to max weight
     weight_relMax = {k: v/max(weights.values()) for (k,v) in weights.items()}
     # Group edges by threshold
-    grouped = bySeq5(weight_relMax)
+    grouped = byOrd5(weight_relMax)
 
     # Maps colour of edges grouped by weights
     colourMap = {
@@ -192,7 +227,7 @@ def byCent4NodeLabel(G, thres):
     # Maps scaling factor of nodeLabel
     scaleMap = {
         0: 1,
-        1: 2,
+        1: 1,
     }
     # Maps font weight of nodeLabel
     fontWeightMap = {

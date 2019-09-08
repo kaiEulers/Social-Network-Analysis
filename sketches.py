@@ -140,25 +140,124 @@ D2 = TG.get_edge_data(p1, p2)
 # MultiGraph.get_edge_data() returns a dict containing all edges drawn between two actors. De-referencing each edge returns another dict with the atribtue name as key and the its corresponding value
 
 
+#%% THIS IS HOW YOU SHOULD DRAW MULTIPLE CLIQUE GRAPHS!!!
+import networkx as nx
+import random as rand
+import matplotlib.pyplot as plt
+import seaborn as sns
+sns.set_style("darkgrid")
+sns.set_context("notebook")
+DATE = '12-2017'
+
+nodes = {k: list(v.nodes) for k,v in CGs.items()}
+nodes1 = {k: rand.choices(v, k=rand.randint(1, len(v))) for k,v in nodes.items()}
+nodes2 = {}
+for k in range(len(nodes)):
+    nodes2[k] = [v for v in nodes[k] if v not in nodes1[k]]
+
+print(f"Total # Nodes\t{[len(v) for k,v in nodes.items()]}")
+print(f"# in Nodes1 \t{[len(v) for k,v in nodes1.items()]}")
+print(f"# in Nodes2 \t{[len(v) for k,v in nodes2.items()]}")
+
+edges = {k: list(v.edges) for k,v in CGs.items()}
+[len(v) for k,v in edges.items()]
+edges1 = {k: rand.choices(v, k=rand.randint(1, len(v))) for k,v in edges.items()}
+[len(v) for k,v in edges1.items()]
+edges2 = {}
+for k in range(len(edges)):
+    edges2[k] = [v for v in edges[k] if v not in edges1[k]]
+[len(v) for k,v in edges2.items()]
+
+print(f"\nTotal # Edges\t{[len(v) for k,v in edges.items()]}")
+print(f"# in Edges1 \t{[len(v) for k,v in edges1.items()]}")
+print(f"# in Edges2 \t{[len(v) for k,v in edges2.items()]}")
+
+
+TGs = {}
+TG = nx.Graph()
+for k,n in nodes.items():
+    TG.clear()
+    TG.add_nodes_from(n)
+    TGs[k] = TG
+
+fig = plt.figure(figsize=(12, 8), dpi=300)
+for k,v in CGs.items():
+
+    plt.subplot(221+k)
+    plt.title(f"Clique {k}")
+
+    # pos = nx.kamada_kawai_layout(v, weight=None)
+    pos = nx.spring_layout(v)
+    nx.draw_networkx_nodes(v, pos, nodelist=nodes1[k], node_color='red' ,node_size=200, font_size=9, width=0.25)
+    nx.draw_networkx_nodes(v, pos, nodelist=nodes2[k], node_color='green' ,node_size=200, font_size=9, width=0.25)
+
+    # nx.draw_networkx(v, pos, nodelist=nodes1[k], node_color='red' ,node_size=200, font_size=9, width=0.25)
+    # nx.draw_networkx(v, pos, nodelist=nodes1[k], node_color='blue' , node_size=200, font_size=9, width=0.25)'
+
+plt.show()
+
 #%%
-# TODO: Write function to group edge weight into five classes of magnitude
-import numpy as np
-N = 5
-# Extract all egdes with weights attribtes from graph
-weights = nx.get_edge_attributes(G, 'weight')
-# Compute weight relative to max weight
-weight_relMax = {k : v/max(weights.values()) for (k, v) in weights.items()}
+import importlib
+import group
+import kaiGraph as kg
+importlib.reload(kg)
+importlib.reload(group)
+cent_thres = 0.75
 
-grouped = {}
-grouped[0] = [k for k,v in weight_relMax.items() if v >= 0 and v < 0.2]
-grouped[1] = [k for k,v in weight_relMax.items() if v >= 0.2 and v < 0.4]
-grouped[2] = [k for k,v in weight_relMax.items() if v >= 0.4 and v < 0.6]
-grouped[3] = [k for k,v in weight_relMax.items() if v >= 0.6 and v < 0.8]
-grouped[4] = [k for k,v in weight_relMax.items() if v >= 0.8]
+# cent = nx.get_node_attributes(G, 'centrality')
+# highCent = {k: v for k,v in cent.items() if v > cent_thres}
+# notHighCent = {k: v for k,v in cent.items() if v not in highCent.values()}
+#
+# len(cent)
+# len(highCent)
+# len(notHighCent)
+
+groupedNodes, nsMap, ecMap, ewMap = group.byNodeCent(G, cent_thres)
+notHighCent= groupedNodes[0]
+highCent= groupedNodes[1]
+
+grouped_notHighCent, cMap_notHighCent, _  = group.byNodeAttr(G, 'party')
+grouped_highCent, cMap_highCent, _  = group.byNodeAttr(G, 'party')
+
+grouped_notHighCent
+grouped_highCent
 
 
-for k in range(5):
-    print(len(grouped[k]))
+# groupedActors_woHighCent = {}
+# for k,v in groupedActors.items():
+#     woHighCent = [p for p in v if p not in highCent]
+#     groupedActors_woHighCent[k] = woHighCent
+#
+# print([len(v) for k,v in groupedNodes_highCent.items()])
+# print([len(v) for k,v in groupedNodes_notHighCent.items()])
 
-S = pd.Series(weight_relMax).sort_values(ascending=False)
-S = pd.Series(weights).sort_values(ascending=False)
+
+#%%
+import matplotlib.pyplot as plt
+import importlib
+import group
+import kaiGraph as kg
+importlib.reload(kg)
+importlib.reload(group)
+
+FIG_SiZE = 4
+fig = plt.figure(figsize=(FIG_SiZE * 3, FIG_SiZE * 2), dpi=300, tight_layout=True)
+kg.drawGraph(G)
+plt.show()
+
+
+
+#%%
+legMap_nodes = {
+    'AG' : "Australian Greens",
+    'ALP' : "Australian Labor Party",
+    'IND' : "Independent",
+    'KAP' : "Katter's Australian Party",
+    'LP' : "Liberal Party of Australia",
+    'Nats' : "National Party of Australia",
+}
+
+list(legMap_nodes.keys())
+list(legMap_nodes.values())
+legend_full = list(legMap_nodes.values()) + list(legMap_nodes.values())
+legend_full

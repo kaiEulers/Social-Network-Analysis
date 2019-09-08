@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 import networkx as nx
 import json
+import pickle
 import time
 
 
@@ -132,8 +133,11 @@ for c in nx.find_cliques(G):
     networkCliques[num] = c
     num += 1
 # Save clique results
-with open(f"results/{FILE_NAME.replace('NMF_senti.csv', 'cliques.json')}", "w") as file:
-    json.dump(networkCliques, file)
+# with open(f"results/{FILE_NAME.replace('NMF_senti.csv', 'cliques.json')}", "w") as file:
+#     json.dump(networkCliques, file)
+with open(f"results/{FILE_NAME.replace('NMF_senti.csv', 'cliques.pickle')}", "wb") as file:
+    pickle.dump(networkCliques, file)
+
 
 # For every actor in the network, search all networkCliques to find if the actor is in it
 # Return a dict of actors and the corresponding clique# that the actor is in
@@ -152,7 +156,7 @@ nx.set_node_attributes(G, cliqueNum, 'cliques')
 
 # ----- Save graph
 nx.write_gpickle(G, f"results/{FILE_NAME.replace('NMF_senti.csv', 'weightedGraph.gpickle')}")
-print(f"\nGraph construction complete! Construction took {time.time()-startTime}s!")
+print(f"\nGraph construction complete! Construction took {round(time.time()-startTime, 2)}s")
 
 
 #%% ---------- Construct Multi-Graph
@@ -231,16 +235,31 @@ print('All edges succesfully added!')
 
 # ----- Save multi-graph
 nx.write_gpickle(MG, f"results/{FILE_NAME.replace('NMF_senti.csv', 'multigraph.gpickle')}")
-print(f"\nGraph construction complete! Construction took {time.time()-startTime}s!")
+print(f"\nGraph construction complete! Construction took {round(time.time()-startTime, 2)}s")
 
 
-#%% Examine centrality of actors
+#%% Plot distribution of centrality
 import matplotlib.pyplot as plt
 import seaborn as sns
+sns.set_style("darkgrid")
+sns.set_context("notebook")
 
-cent = pd.read_csv("results/ssm_2017-12_results_centrality.csv")
+cent = pd.read_csv(f"results/{FILE_NAME.replace('NMF_senti', 'centrality')}")
 cent.shape
 
-sns.distplot(pd.Series(cent['Degree']), kde=False)
-plt.show()
+fig = plt.figure(dpi=300, tight_layout=True)
+ax = sns.distplot(pd.Series(cent['EdgeWeightSum']), kde=False)
+ax.set_title(f"Same-sex Marriage Bill {DATE}\nCentrality")
+ax.set_ylabel("Frequency")
+fig.savefig(f"results/{FILE_NAME.replace('NMF_senti.csv', 'centrality.png')}", dpi=300)
+fig.show()
+
+
+#%% Draw graph
+import kaiGraph as kg
+import importlib
+importlib.reload(kg)
+
+fig = kg.drawGraph(G)
+fig.show()
 

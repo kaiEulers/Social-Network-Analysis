@@ -6,75 +6,86 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import networkx as nx
 import importlib
-import group
-import colourPals as cp
-import time
+import kaiGraph as kg
+import kaiGraph1 as kg1
 
 sns.set_style("darkgrid")
 sns.set_context("notebook")
 
-# TODO: Change entire code such that drawing uses nx.draw_networkx()!!!
-#%%
-importlib.reload(group)
-importlib.reload(cp)
-
-CENT_THRES = 0.75
-# Available attributes: party, gender, metro
-ATTRIBUTE = 'party'
-NODE_SIZE = 11
-NODE_ALPHA = 0.85
-NODE_LABEL_SIZE = 7
-EDGE_WIDTH = 0.25
-LEGEND_FONT_SIZE = 9
-FIG_SiZE = 4
-
-startTime = time.time()
 DATE = '2017-12'
+FIG_SiZE = 4
+SUBGRAPH_LAYOUT = 221
 FILE_NAME = f"ssm_{DATE}_results_weightedGraph.gpickle"
 G = nx.read_gpickle(f"results/{FILE_NAME}")
 
-# Get layout positions
-# Increase k to spread nodes further apart
-pos = nx.spring_layout(G)
 
-# ----- Draw Network
-print('Drawing graph...')
+#%% Normal Graph Drawing Test
+importlib.reload(kg)
 
-# ----- Draw nodes
-print("\nDrawing nodes...")
-fig = plt.figure(figsize=(FIG_SiZE*3, FIG_SiZE*2), dpi=300, tight_layout=True)
-plt.title(f"Same-sex Marriage Bill {DATE}")
+GROUPBY = 'party'
+LAYOUT = 'kamada'
 
-# Group by actors by party for node colouring
-groupedActors, cm_nodes, leg_nodes = group.byNodeAttr(G, ATTRIBUTE)
-for grp in groupedActors.keys():
-    nx.draw_networkx_nodes(G, pos, nodelist=groupedActors[grp], node_size=NODE_SIZE*100, node_color=cm_nodes[grp], alpha=NODE_ALPHA, edgecolors='black', linewidths=0.5, label=leg_nodes[grp])
-print("Node drawing complete!")
+fig = plt.figure(figsize=(FIG_SiZE * 3, FIG_SiZE * 2), dpi=300, tight_layout=True)
+kg.drawGraph(G, groupBy=GROUPBY, layout=LAYOUT,
+             title=f"Same-sex Marriage Bill {DATE}")
+plt.show()
 
 
-# ----- Draw node labels
-print("\nDrawing node labels...")
-# Group nodeLabels by actors with high centrality
-groupedLabels, cm_labels, sm_labels, fwm_labels = group.byCent4NodeLabel(G, CENT_THRES)
-for grp in groupedLabels.keys():
-    nx.draw_networkx_labels(G, pos, labels=groupedLabels[grp], font_size=NODE_LABEL_SIZE*sm_labels[grp], font_color=cm_labels[grp], font_weight=fwm_labels[grp])
-print("Node label drawing complete!")
 
+#%% Graph Drawing Test with attempted grouping of nodes by centrality
+importlib.reload(kg)
 
-# ----- Draw edges
-print("\nDrawing edges...")
-groupedEdges, cm_edges, sm_egdes, leg_edges = group.byEdgeWeight(G)
-for grp in groupedEdges.keys():
-    nx.draw_networkx_edges(G, pos, edgelist=groupedEdges[grp], width=EDGE_WIDTH*sm_egdes[grp], edge_color=cm_edges[grp], label=leg_edges[grp])
-print("Edge drawing complete!")
+GROUPBY = 'party'
+LAYOUT = 'kamada'
 
+fig = plt.figure(figsize=(FIG_SiZE * 3, FIG_SiZE * 2), dpi=300, tight_layout=True)
+kg1.drawGraph(G, groupBy=GROUPBY, layout=LAYOUT,
+              title=f"Same-sex Marriage Bill {DATE}")
+plt.show()
 
-# ----- Draw legend
-plt.legend(markerscale=LEGEND_FONT_SIZE*0.05, fontsize=LEGEND_FONT_SIZE)
-
-
-# ----- Save figure
-fig.savefig(f"results/{FILE_NAME.replace('.gpickle', '.png')}", dpi=300)
+fig.savefig(f"results/{FILE_NAME.replace('weightedGraph.gpickle', 'graph.png')}", dpi=300)
 fig.show()
-print(f"\nGraph drawing complete! Drawing took {time.time()-startTime}s")
+
+
+#%% Normal Clique Graph Drawing Test
+importlib.reload(kg)
+
+GROUPBY = 'party'
+LAYOUT = 'spring'
+
+fig = plt.figure(figsize=(FIG_SiZE * 3, FIG_SiZE * 2), dpi=300, tight_layout=True)
+# Draw cliqueGraphs in subplots
+for k,gph in CGs.items():
+    plt.subplot(SUBGRAPH_LAYOUT + k)
+    kg.drawGraph(gph, groupBy=GROUPBY, layout=LAYOUT,
+                 title=f"{DATE} Clique{k}",
+                 legend=False,
+                 node_size=5,
+                 font_size=6,
+                 )
+plt.show()
+
+
+#%% Clique Graph Drawing Test with attempted grouping of nodes by centrality
+importlib.reload(kg1)
+
+GROUPBY = 'party'
+LAYOUT = 'spring'
+
+fig = plt.figure(figsize=(FIG_SiZE * 3, FIG_SiZE * 2), dpi=300, tight_layout=True)
+# Draw cliqueGraphs in subplots
+for k,gph in CGs.items():
+    plt.subplot(SUBGRAPH_LAYOUT + k)
+    kg1.drawGraph(gph, groupBy=GROUPBY, layout=LAYOUT,
+                 title=f"{DATE} Clique{k}",
+                 legend=False,
+                 node_size=5,
+                 font_size=6,
+                 node_size_highCent= 10,
+                 )
+plt.show()
+
+fig.savefig(f"results/{FILE_NAME.replace('weightedGraph.gpickle', 'cliqueGraphs.png')}", dpi=300)
+fig.show()
+
 

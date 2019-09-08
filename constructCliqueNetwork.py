@@ -5,10 +5,8 @@
 import numpy as np
 import pandas as pd
 import networkx as nx
-import json
 import pickle
 import time
-import kaiGraph as kg
 import importlib
 
 
@@ -75,16 +73,3 @@ for k in cliqueDict.keys():
 nx.write_gpickle(CGs, f"results/{FILE_NAME_GRAPH.replace('weightedGraph', 'cliqueGraph')}")
 print(f"\nClique graph construction complete! Construction took {round(time.time()-startTime, 2)}s")
 
-
-#%%
-import matplotlib.pyplot as plt
-import kaiGraph as kg
-importlib.reload(kg)
-
-FIG_SiZE = 4
-fig = plt.figure(figsize=(FIG_SiZE * 3, FIG_SiZE * 2), dpi=300, tight_layout=True)
-# Draw cliqueGraphs in subplots
-for k,gph in CGs.items():
-    plt.subplot(221 + k)
-    kg.drawGraph(gph, title=f"{DATE} Clique{k}", legend=False, node_size=5, font_size=6)
-plt.show()

@@ -196,68 +196,13 @@ for k,v in CGs.items():
 
 plt.show()
 
-#%%
-import importlib
-import group
-import kaiGraph as kg
-importlib.reload(kg)
-importlib.reload(group)
-cent_thres = 0.75
+#%% Attempted to sort nodes by centrality and party
+nodes = dict(G.node.data())
 
-# cent = nx.get_node_attributes(G, 'centrality')
-# highCent = {k: v for k,v in cent.items() if v > cent_thres}
-# notHighCent = {k: v for k,v in cent.items() if v not in highCent.values()}
-#
-# len(cent)
-# len(highCent)
-# len(notHighCent)
+p = 'Bill Shorten'
+nodes[p]
 
-groupedNodes, nsMap, ecMap, ewMap = group.byNodeCent(G, cent_thres)
-notHighCent= groupedNodes[0]
-highCent= groupedNodes[1]
+TG = nx.Graph()
+TG.clear()
+TG.add_nodes_from(nodes)
 
-grouped_notHighCent, cMap_notHighCent, _  = group.byNodeAttr(G, 'party')
-grouped_highCent, cMap_highCent, _  = group.byNodeAttr(G, 'party')
-
-grouped_notHighCent
-grouped_highCent
-
-
-# groupedActors_woHighCent = {}
-# for k,v in groupedActors.items():
-#     woHighCent = [p for p in v if p not in highCent]
-#     groupedActors_woHighCent[k] = woHighCent
-#
-# print([len(v) for k,v in groupedNodes_highCent.items()])
-# print([len(v) for k,v in groupedNodes_notHighCent.items()])
-
-
-#%%
-import matplotlib.pyplot as plt
-import importlib
-import group
-import kaiGraph as kg
-importlib.reload(kg)
-importlib.reload(group)
-
-FIG_SiZE = 4
-fig = plt.figure(figsize=(FIG_SiZE * 3, FIG_SiZE * 2), dpi=300, tight_layout=True)
-kg.drawGraph(G)
-plt.show()
-
-
-
-#%%
-legMap_nodes = {
-    'AG' : "Australian Greens",
-    'ALP' : "Australian Labor Party",
-    'IND' : "Independent",
-    'KAP' : "Katter's Australian Party",
-    'LP' : "Liberal Party of Australia",
-    'Nats' : "National Party of Australia",
-}
-
-list(legMap_nodes.keys())
-list(legMap_nodes.values())
-legend_full = list(legMap_nodes.values()) + list(legMap_nodes.values())
-legend_full

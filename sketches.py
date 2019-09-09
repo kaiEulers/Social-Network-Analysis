@@ -1,9 +1,19 @@
 #%% ----- Imports
-import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import networkx as nx
+import importlib
+import group
+import group
+import kaiGraph as kg
+
+DATE = '2017-12'
+FIG_SiZE = 4
+SUBGRAPH_LAYOUT = 221
+PATH = f"results/{DATE}/"
+G = nx.read_gpickle(f"{PATH}ssm_{DATE}_weightedGraph.gpickle")
+CGs = nx.read_gpickle(f"{PATH}ssm_{DATE}_weightedGraph.gpickle")
 
 
 #%% THIS IS HOW YOU APPEND ROW TO DATAFRAMES!!
@@ -202,7 +212,35 @@ nodes = dict(G.node.data())
 p = 'Bill Shorten'
 nodes[p]
 
+parties = nx.get_node_attributes(G, 'parties')
+party_unique = list(set(parties.values()))
+party_unique.sort()
+party_fullName = [
+    "Australian Greens",
+    "Australian Labor Party",
+    "Independent",
+    "Katter's Australia Party",
+    "Liberal Party",
+    "Nationals Party of Australia",
+]
+leg = zip(party_unique, party_fullName)
+
+
+#%% Test Graph
+import random as rand
+S = "a b c d e f g".split()
+nodes = rand.choices(S, k=rand.randint(1, len(S)))
+nodes
 TG = nx.Graph()
 TG.clear()
 TG.add_nodes_from(nodes)
 
+pos = nx.kamada_kawai_layout(TG, weight=None)
+# nx.draw_networkx_nodes(TG, pos, nodelist=nodes, label='blue')
+nx.draw_networkx_nodes(TG, pos, nodelist=nodes, label='blue')
+nx.draw_networkx_nodes(TG, pos, nodelist=rand.choice(nodes), linewidths=3, edgecolors='black')
+plt.legend()
+plt.show()
+
+
+#%%

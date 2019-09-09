@@ -1,7 +1,8 @@
 """
 @author: kaisoon
 """
-# ===========================================================================
+# Functions goes with attempt of sorting nodes by centrality and party
+# =====================================================================================
 def byThres(data, thres):
     """
     byThres() groups data by a specified threshold
@@ -11,13 +12,15 @@ def byThres(data, thres):
     """
     grouped = {}
     # Find keys below the weight threshold
+    # grouped[0] = [k for (k, v) in data.items() if v < thres]
     grouped[0] = [k for (k, v) in data.items() if v < thres]
     # Find keys above the weight threshold
+    # grouped[1] = [k for (k, v) in data.items() if v >= thres]
     grouped[1] = [k for (k, v) in data.items() if v >= thres]
 
     return grouped
 
-def bySeq5(data):
+def byOrd5(data):
     """
     bySeq5() groups data in five sequential classes
     :param data: is a dict
@@ -31,8 +34,8 @@ def bySeq5(data):
 
     return grouped
 
-# ===========================================================================
-def byNodeAttr(G, groupby):
+# =====================================================================================
+def byNodeAttr(data, groupby):
     """
     byNodeAttr() group nodes in a graph according to its attribute
     :param G is a graph constructed with networkx
@@ -42,7 +45,6 @@ def byNodeAttr(G, groupby):
     :returns colouMap is a dict of the colour-map of grouped edges. The colour-map is used to colour the network graph.
     :returns legendMap is a dict of legend names used for the network graph
     """
-    import networkx as nx
     import colourPals as cp
     import importlib
     importlib.reload(cp)
@@ -54,8 +56,6 @@ def byNodeAttr(G, groupby):
 
     # ----- Group actors by attribute
     grouped = {}
-    # Load attributes from graph
-    data = nx.get_node_attributes(G, groupby)
     # Construct a set of unique groups
     groups = list(set(data.values()))
     groups.sort()
@@ -68,13 +68,21 @@ def byNodeAttr(G, groupby):
     # ----- Create colourMap base on the grouping for node colouring and legend labels
     if groupby == 'party':
         # Using SEABORN default palette for parties
+        # colourMap = {
+        #     'AG': cp.sns['green'],
+        #     'ALP': cp.sns['red'],
+        #     'IND': cp.sns['brown'],
+        #     'KAP': cp.sns['purple'],
+        #     'LP': cp.sns['blue'],
+        #     'Nats': cp.sns['yellow'],
+        # }
         colourMap = {
-            'AG': cp.sns['green'],
-            'ALP': cp.sns['red'],
-            'IND': cp.sns['brown'],
-            'KAP': cp.sns['purple'],
-            'LP': cp.sns['blue'],
-            'Nats': cp.sns['yellow'],
+            'AG': cp.cbSet1['green'],
+            'ALP': cp.cbSet1['red'],
+            'IND': cp.cbSet1['brown'],
+            'KAP': cp.cbSet1['purple'],
+            'LP': cp.cbSet1['blue'],
+            'Nats': cp.cbSet1['yellow'],
         }
         legendMap = {
             'AG' : "Australian Greens",
@@ -115,7 +123,28 @@ def byNodeAttr(G, groupby):
         raise ValueError('Attribute must be one of the following: Party, Gender, Metro')
 
 
-def byEdgeWeight(G):
+# =====================================================================================
+def byNodeCent(data, thres):
+    """
+    byNodeAttr() group nodes in a graph according to its attribute
+    :param G is a graph constructed with networkx
+    Returns 2 dicts and a list
+    :returns grouped is a dict of each attributes mapped to all actors associated with that attribute
+    :returns colouMap is a dict of the colour-map of grouped edges. The colour-map is used to colour the network graph.
+    :returns legendMap is a dict of legend names used for the network graph
+    """
+    import colourPals as cp
+    import importlib
+    importlib.reload(cp)
+
+    # ----- Group actors by attribute
+    # Split data at centrality threshold
+    grouped = byThres(data, thres)
+
+    return grouped
+
+
+def byEdgeWeight(data):
     """
     byEdgeWeight() group edges in a graph according to its weight
     :param G: is a graph constructed with networkx
@@ -124,17 +153,12 @@ def byEdgeWeight(G):
     :returns scaleMap
     :returns legendMap
     """
-    import networkx as nx
     import colourPals as cp
     import importlib
     importlib.reload(cp)
 
-    # Extract all egdes with weights attribtes from graph
-    weights = nx.get_edge_attributes(G, 'weight')
-    # Compute weight relative to max weight
-    weight_relMax = {k: v/max(weights.values()) for (k,v) in weights.items()}
     # Group edges by threshold
-    grouped = bySeq5(weight_relMax)
+    grouped = byOrd5(data)
 
     # Maps colour of edges grouped by weights
     colourMap = {
@@ -160,7 +184,8 @@ def byEdgeWeight(G):
     return grouped, colourMap, scaleMap, legendMap
 
 
-def byCent4NodeLabel(G, thres):
+# =====================================================================================
+def byCent4NodeLabel(data, thres):
     """
     byNodeCent() group nodes in a graph according to its centrality
     :param G: is a graph constructed with networkx
@@ -170,14 +195,11 @@ def byCent4NodeLabel(G, thres):
     :returns scaleMap
     :returns fontWeightMap
     """
-    import networkx as nx
     import colourPals as cp
     import importlib
     importlib.reload(cp)
 
-    # Extract all egdes with weights attribtes frmo graph
-    cents = nx.get_node_attributes(G, 'centrality')
-    grouped = byThres(cents, thres)
+    grouped = byThres(data, thres)
     # Construct dict to reformat names from 'first last' to 'first\nlast'
     low = {n : n.replace(' ', '\n') for n in grouped[0]}
     high = {n : n.replace(' ', '\n') for n in grouped[1]}
@@ -192,7 +214,7 @@ def byCent4NodeLabel(G, thres):
     # Maps scaling factor of nodeLabel
     scaleMap = {
         0: 1,
-        1: 1.5,
+        1: 1.25,
     }
     # Maps font weight of nodeLabel
     fontWeightMap = {
@@ -200,9 +222,4 @@ def byCent4NodeLabel(G, thres):
         1: 'bold',
     }
     return grouped, colourMap, scaleMap, fontWeightMap
-
-
-#%%
-
-
 

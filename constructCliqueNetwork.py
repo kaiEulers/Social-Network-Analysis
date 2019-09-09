@@ -2,25 +2,21 @@
 @author: kaisoon
 """
 # ----- Imports
-import numpy as np
 import pandas as pd
 import networkx as nx
 import pickle
 import time
-import importlib
 
 
-#%% ----- Load graph, centrality, and clique data
+# =====================================================================================
+# Load graph, centrality, and clique data
 startTime = time.time()
 DATE = '2017-12'
-FILE_NAME = f"ssm_{DATE}_results_NMF_senti.csv"
-FILE_NAME_GRAPH = FILE_NAME.replace('NMF_senti.csv', 'weightedGraph.gpickle')
+PATH = f"results/{DATE}/"
 
-results = pd.read_csv(f"results/{FILE_NAME}")
-G = nx.read_gpickle(f"results/{FILE_NAME_GRAPH}")
-# with open(f"results/{FILE_NAME.replace('NMF_senti.csv', 'cliques.json')}", "r") as file:
-#     cliqueDict = json.load(file)
-with open(f"results/{FILE_NAME.replace('NMF_senti.csv', 'cliques.pickle')}", "rb") as file:
+results = pd.read_csv(f"{PATH}ssm_{DATE}_results_NMF_senti.csv")
+G = nx.read_gpickle(f"{PATH}ssm_{DATE}_weightedGraph.gpickle")
+with open(f"{PATH}ssm_{DATE}_cliques.pickle", "rb") as file:
     cliqueDict = pickle.load(file)
 
 # ----- Construct clique graphs
@@ -67,9 +63,10 @@ for k in cliqueDict.keys():
 
     CGs[k] = CG
     print(f"All edges successfully added for cliqueGraph{k}")
+    print(f"{len(CGs)} were cliques found")
 
 
 # Save clique graph
-nx.write_gpickle(CGs, f"results/{FILE_NAME_GRAPH.replace('weightedGraph', 'cliqueGraph')}")
+nx.write_gpickle(CGs, f"{PATH}ssm_{DATE}_cliqueGraphs.gpickle")
 print(f"\nClique graph construction complete! Construction took {round(time.time()-startTime, 2)}s")
 

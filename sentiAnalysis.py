@@ -4,18 +4,16 @@
 # Imports & Functions
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
 import time
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 
-#%%---------- Sentiment Analysis
+# =====================================================================================
+# Sentiment Analysis
 startTime = time.time()
 DATE = '2017-12'
-FILE_NAME = f"ssm_{DATE}_results_NMF.csv"
-results = pd.read_csv(f"results/{FILE_NAME}")
-
+PATH = f"results/{DATE}/"
+results = pd.read_csv(f"{PATH}ssm_{DATE}_results_NMF.csv")
 
 sid = SentimentIntensityAnalyzer()
 senti = pd.DataFrame(columns="pos neu neg compound".split())
@@ -30,8 +28,6 @@ for i in results.index:
     # Print progress
     if i % 20 == 0:
         print(f"{i:{5}} of {len(results):{5}}\t{score}")
-print(f"Sentiment analysis complete! Analysis took {time.time()-startTime}s")
-
 
 # ----- Concat sentiments with results
 speeches = results['Speech']
@@ -41,40 +37,39 @@ results['Senti_neu'] = senti['neu']
 results['Senti_neg'] = senti['neg']
 results['Senti_comp'] = senti['compound']
 results['Speech'] = speeches
-
 # Save results
-results.to_csv(f"results/{FILE_NAME.replace('NMF', 'NMF_senti')}", index=False)
+results.to_csv(f"{PATH}ssm_{DATE}_results_NMF_senti.csv", index=False)
 
 
-#%% Analyse Results
-sns.set_style("darkgrid")
-sns.set_context("notebook")
+# =====================================================================================
+# Generate sentiDiff of all speeches with the same topic
+sentiDiff = []
+for i in range(len(results)):
+    row_i = results.iloc[i]
+    p1 = row_i['Person']
+    t1 = row_i['Topic_nmf']
+    s1 = row_i['Senti_comp']
+    for j in range(i+1, len(results)):
+        row_j = results.iloc[j]
+        p2 = row_j['Person']
+        t2 = row_j['Topic_nmf']
+        s2 = row_j['Senti_comp']
+        # Compared speeches cannot be from the same person
+        # Compared speeches must be of the same topic
+        if p1 != p2 and t1 == t2 and s1*s2 > 0:
+            sentiDiff.append(abs(s1-s2))
 
-# ----- Plot histograms of compound, pos, neu, and neg sentiment
-fig = plt.figure(dpi=300)
+    # Print progress
+    if i % 20 == 0 :
+        print(f"{i:{5}} of {len(results):{5}}\t{score}")
 
-plt.subplot(2, 2, 1)
-ax1 = sns.distplot(senti['pos'], bins=30, kde=True, norm_hist=False)
+# Compute percentile
+percentile = [sd/max(sentiDiff) for sd in sentiDiff]
 
-plt.subplot(2, 2, 2)
-ax2 = sns.distplot(senti['neg'], bins=30, kde=True, norm_hist=False)
+# Save sentiDiff
+sentiDiff = pd.DataFrame(sentiDiff, columns='Senti_Diff'.split())
+sentiDiff['Percentile'] = percentile
+sentiDiff = sentiDiff.sort_values(by='Percentile', ascending=False)
+sentiDiff.to_csv(f"{PATH}distributions/ssm_{DATE}_sentiDiff.csv", index=False)
 
-plt.subplot(2, 2, 3)
-ax3 = sns.distplot(senti['neu'], bins=30, kde=True, norm_hist=False)
-
-plt.subplot(2, 2, 4)
-ax4 = sns.distplot(senti['compound'], bins=30, kde=False, norm_hist=False)
-# ax4.set_ylim([0, 8])
-
-plt.show()
-
-# Members who do not support SSM
-# Russell Broadbent, Keith Pitt, David Littleproud, Bob Katter
-# Speech/es by Katter 216-219
-# Speech/es by Pitt 188
-# Speech/es by Littleproud 258
-
-# True Positive - #216 #198
-# False Positive - 11
-# True Negative - #217 #218 #219
-
+print(f"Sentiment analysis complete! Analysis took {time.time()-startTime}s")

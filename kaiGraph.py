@@ -1,12 +1,29 @@
 """
 @author: kaisoon
 """
-# TODO: How should I determine the centrality threshold?
-def drawGraph(G, groupBy='party', cent_thres=0.75, layout='kamada', title='', legend=True, node_size=11, node_alpha=0.85, node_linewidth=0.5, font_size=7, edge_width=0.25, legend_font_size=9):
+# TODO: This is the module that I will use when I modularise the entire program
+def drawGraph(
+        G,
+        groupBy='party',
+        # TODO: How do I determine the centrality threshold?
+        CENT_THRES=0.85,
+        layout='kamada',
+        title='',
+        legend=True,
+        node_size=10,
+        node_alpha=0.85,
+        node_linewidth=0.5,
+        node_size_highCent= 20,
+        node_linewidth_highCent= 2,
+        font_size=7,
+        edge_width=0.25,
+        title_fontsize=None,
+        legend_font_size=9,
+):
     """
     :param G:
     :param groupBy: 'party'|'gender'|'metro'
-    :param cent_thres:
+    :param CENT_THRES:
     :param title:
     :param node_size:
     :param node_alpha:
@@ -16,7 +33,8 @@ def drawGraph(G, groupBy='party', cent_thres=0.75, layout='kamada', title='', le
     :param FIG_SiZE:
     :return:
     """
-    # ----- Imports
+    # =====================================================================================
+    # Imports
     import math
     import matplotlib.pyplot as plt
     import seaborn as sns
@@ -30,8 +48,9 @@ def drawGraph(G, groupBy='party', cent_thres=0.75, layout='kamada', title='', le
     startTime = time.time()
 
     # ----- Set up graph layout
-    sns.set_style("darkgrid")
-    sns.set_context("notebook")
+    sns.set_style("dark")
+    sns.set_context("talk")
+
     # Get node position in layout
     if layout == 'circular':
         pos = nx.circular_layout(G)
@@ -50,20 +69,18 @@ def drawGraph(G, groupBy='party', cent_thres=0.75, layout='kamada', title='', le
     elif layout == 'spectral':
         pos = nx.spectral_layout(G)
 
-
-    plt.title(f"{title}")
-
-    # ----- Draw nodes
+    # =====================================================================================
+    # Draw nodes
+    plt.title(f"{title}", fontsize=title_fontsize)
     print("\nDrawing nodes...")
-    # Extract nodes with centrality above the threshold
-    cent = nx.get_node_attributes(G, 'centrality')
-    highCent = [k for k, v in cent.items() if v > cent_thres]
-    # Group by actors by party for node colouring
-    groupedNodes, cMap_nodes, legMap_nodes = group.byNodeAttr(G, groupBy)
-    for grp in groupedNodes.keys():
+
+    # Group nodes by attribute and draw ALL nodes
+    parties = nx.get_node_attributes(G, groupBy)
+    grouped_party, cMap_nodes, legMap_nodes = group.byNodeAttr(parties, groupBy)
+    for grp in grouped_party.keys() :
         nx.draw_networkx_nodes(
             G, pos,
-            nodelist=groupedNodes[grp],
+            nodelist=grouped_party[grp],
             node_size=node_size * 100,
             node_color=cMap_nodes[grp],
             alpha=node_alpha,
@@ -71,41 +88,64 @@ def drawGraph(G, groupBy='party', cent_thres=0.75, layout='kamada', title='', le
             linewidths=node_linewidth,
             label=legMap_nodes[grp]
         )
+
+    # Filter nodes with centrality
+    cents = nx.get_node_attributes(G, 'centrality')
+    grouped_cent = group.byNodeCent(cents, CENT_THRES)
+    # Reconstruct dictionary for nodes with high centrality
+    highCent = {k : v for k, v in parties.items() if k in grouped_cent[1]}
+    # Group nodes with high centrality by attribute and draw over already drawn graph
+    groupedhighCent_party, cMap_nodesHighCent, _ = group.byNodeAttr(highCent, groupBy)
+    for grp in groupedhighCent_party.keys() :
+        nx.draw_networkx_nodes(
+            G, pos,
+            nodelist=groupedhighCent_party[grp],
+            node_size=node_size_highCent * 100,
+            node_color=cMap_nodesHighCent[grp],
+            edgecolors='black',
+            linewidths=node_linewidth_highCent,
+        )
     print("Node drawing complete!")
 
-
-    # ----- Draw node labels
-    print("\nDrawing node labels...")
-    # Group nodeLabels by actors with high centrality
-    groupedLabels, cMap_labels, sMap_labels, fwMap_labels = group.byCent4NodeLabel(G, cent_thres)
-    for grp in groupedLabels.keys():
-        nx.draw_networkx_labels(
-            G, pos,
-            labels=groupedLabels[grp],
-            font_size=font_size * sMap_labels[grp],
-            font_color=cMap_labels[grp],
-            font_weight=fwMap_labels[grp])
-    print("Node label drawing complete!")
-
-
-    # ----- Draw edges
+    # =====================================================================================
+    # Draw edges
     print("\nDrawing edges...")
-    groupedEdges, cMap_edges, sMap_egdes, legMap_edges = group.byEdgeWeight(G)
+    # Retrieve all edges with weights attributes from graph
+    weights = nx.get_edge_attributes(G, 'weight')
+    # Compute weight relative to max weight
+    weight_percentile = {k: v / max(weights.values()) for (k, v) in weights.items()}
+    # Group edges by weight
+    groupedEdges, cMap_edges, sMap_egdes, legMap_edges = group.byEdgeWeight(weight_percentile)
     for grp in groupedEdges.keys():
         nx.draw_networkx_edges(
             G, pos,
             edgelist=groupedEdges[grp],
             width=edge_width * sMap_egdes[grp],
             edge_color=cMap_edges[grp],
-            label=legMap_edges[grp])
+            label=legMap_edges[grp]
+        )
     print("Edge drawing complete!")
 
+    # =====================================================================================
+    # Draw node labels
+    print("\nDrawing node labels...")
+    # Group nodeLabels by actors with high centrality
+    groupedLabels, cMap_labels, sMap_labels, fwMap_labels = group.byCent4NodeLabel(cents, CENT_THRES)
+    for grp in groupedLabels.keys():
+        nx.draw_networkx_labels(
+            G, pos,
+            labels=groupedLabels[grp],
+            font_size=font_size * sMap_labels[grp],
+            font_color=cMap_labels[grp],
+            font_weight=fwMap_labels[grp],
+        )
+    print("Node label drawing complete!")
 
     # ----- Draw legend
     if legend == True:
         plt.legend(markerscale=legend_font_size * 0.05, fontsize=legend_font_size)
 
-
-    print(f"\nDrawing completed in {time.time()-startTime}s!")
-
+    print(f"\nDrawing completed in {round(time.time()-startTime, 2)}s!")
+    # Print percentage of speeches removed by threshold
+    print(f"Percentage of nodes with high centrality: {round(len(highCent)/len(cents), 4) * 100}%")
     return

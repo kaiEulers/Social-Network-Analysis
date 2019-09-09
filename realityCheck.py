@@ -6,7 +6,7 @@ import networkx as nx
 DATE = "2017-12"
 G = nx.read_gpickle(f"results/ssm_results_graph_{DATE}.gpickle")
 
-FILE_NAME = "results/realityCheck/"
+FILE_NAME = "results/realityChecks/"
 
 # Extract data from graph
 actorList = np.sort(list(G.node))

@@ -94,7 +94,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="constructCliqueNetwork" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+    <configuration name="constructCliqueGraph" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="COMP9005_project" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -107,7 +107,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/constructCliqueNetwork.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/constructCliqueGraph.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="true" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -233,7 +233,13 @@
       <workItem from="1567962682037" duration="1238000" />
       <workItem from="1567966254512" duration="1632000" />
       <workItem from="1568011073407" duration="20398000" />
-      <workItem from="1568037343088" duration="15574000" />
+      <workItem from="1568037343088" duration="16222000" />
+      <workItem from="1568081364814" duration="4851000" />
+      <workItem from="1568088819523" duration="217000" />
+      <workItem from="1568089813459" duration="90000" />
+      <workItem from="1568091270609" duration="2991000" />
+      <workItem from="1568112550825" duration="3198000" />
+      <workItem from="1568117734763" duration="15279000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit">
       <created>1565502549553</created>

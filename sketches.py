@@ -6,7 +6,7 @@ import networkx as nx
 import importlib
 import group
 import group
-import kaiGraph as kg
+import drawGraph as kg
 
 DATE = '2017-12'
 FIG_SiZE = 4
@@ -206,6 +206,7 @@ for k,v in CGs.items():
 
 plt.show()
 
+
 #%% Attempted to sort nodes by centrality and party
 nodes = dict(G.node.data())
 
@@ -243,4 +244,23 @@ plt.legend()
 plt.show()
 
 
+#%% This is how I get nodes and its respective data
+import pickle
+with open(f"{PATH}ssm_{DATE}_cliques.pickle", "rb") as file:
+    cliques = pickle.load(file)
+nodes = dict(G.nodes)
+
+for k,clique in cliques.items():
+    for person in clique:
+        print(nodes[p]['party'])
+        print(nodes[p]['gender'])
+        print(nodes[p]['metro'])
+        print(nodes[p]['centrality'])
+        print(nodes[p]['cliques'])
+        # print(nodes[p]['data'])
+
+cliques[0]
+
 #%%
+for c in cliques:
+    print(c)

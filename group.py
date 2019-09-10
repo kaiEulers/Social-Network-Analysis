@@ -222,4 +222,3 @@ def byCent4NodeLabel(data, thres):
         1: 'bold',
     }
     return grouped, colourMap, scaleMap, fontWeightMap
-

@@ -44,4 +44,3 @@ cbYlGn = ['#ffffcc','#c2e699','#78c679','#238443']
 # ColourBrewer Sequential Palette
 # Grays
 cbGrays = ['#ffffff','#f0f0f0','#d9d9d9','#bdbdbd','#969696','#737373','#525252','#252525','#000000']
-

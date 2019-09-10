@@ -41,4 +41,3 @@ relationData = edgeAttr['Data'].T
 # Save relationData
 for n,k in zip(relationData.columns, range(relationData.shape[1])):
     relationData[n].to_csv(f"{FILE_NAME}edge/{actor1.replace(' ', '')}-{actor2.replace(' ', '')}-{k}.csv", header=False)
-

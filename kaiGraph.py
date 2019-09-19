@@ -1,8 +1,8 @@
 """
 @author: kaisoon
 """
-from topicMod_NMF import topicMod
-from sentiAnalysis import sentiAn
+from topicMod import model
+from sentiAnalysis import sentiAnal
 from constructGraph import constructG
 from constructCliqueGraph import constructCG
 from drawGraph import draw

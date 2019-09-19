@@ -1,9 +1,13 @@
 # ----- Imports
+import pandas as pd
 import random as rand
 import numpy as np
 import networkx as nx
 
 DATE = "2017-12"
+data = pd.read_csv("data/ssm_rel.csv")
+results = pd.read_csv("results/ssm_results_nmf_senti.csv")
+topics = pd.read_csv("results/ssm_topics_nmf.csv", index_col=0)
 G = nx.read_gpickle(f"results/ssm_results_graph_{DATE}.gpickle")
 
 FILE_NAME = "results/realityChecks/"
@@ -41,3 +45,38 @@ relationData = edgeAttr['Data'].T
 # Save relationData
 for n,k in zip(relationData.columns, range(relationData.shape[1])):
     relationData[n].to_csv(f"{FILE_NAME}edge/{actor1.replace(' ', '')}-{actor2.replace(' ', '')}-{k}.csv", header=False)
+
+
+#%% Extract speech with highest coeffMax
+speech_id = topics.loc['speechId']
+highestCoeffMax = results[results['Speech_id'].isin(speech_id)]
+highestCoeffMax = highestCoeffMax.sort_values(by='Topic')
+
+for i, row in highestCoeffMax.iterrows():
+    row_T = row.transpose()
+    row_T.to_csv(f"results/realityChecks/highestMaxCoeff/highestCoeffMax_topic{row['Topic']}.csv", header=True)
+
+#%% Extract particular speech of a topic
+TOPIC = 8
+k = 0
+
+speech = results[results['Topic'] == TOPIC].iloc[k]
+speech = speech.transpose()
+speech.to_csv(f"results/realityChecks/speech.csv", header=True)
+
+#%% Extract particular speech
+id = 41941
+i = 141
+
+# speech = data[data['Speech_id'] == id]
+speech = data.loc[i]
+speech = speech.transpose()
+speech.to_csv(f"results/realityChecks/speech.csv", header=True)
+
+#%% Check if word is in any of the speeches
+word = 'plebiscite'
+ids = []
+for i, row in results.iterrows():
+    if word in row['Speech'].lower():
+        ids.append(i)
+print(ids)

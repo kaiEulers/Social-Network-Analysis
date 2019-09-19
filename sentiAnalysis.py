@@ -1,23 +1,26 @@
 """
 @author: kaisoon
 """
-def sentiAn(DATA, SENTIDIFF_PERC_THRES):
-    import pandas as pd
-    import time
-    from nltk.sentiment.vader import SentimentIntensityAnalyzer
-    # =====================================================================================
+import pandas as pd
+import time
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+
+def sentiAnal(DATA, SENTIDIFF_PERC_THRES):
+    """
+    :param DATA: is a DataFrame with columns 'Person, Topic, and 'Speech'.
+    :param SENTIDIFF_PERC_THRES:
+    :return:
+    """
+    # ================================================================================
     # ----- FOR DEBUGGING
-    DATE = '2017-12'
-    PATH = f"results/{DATE}/"
+    # PATH = f"results/"
 
     # PARAMETERS
-    # TODO: How do I determine the sentiment diff threshold? WE WANT SENTI DIFF THAT ARE LOW!
-    # DATA = pd.read_csv(f"{PATH}ssm_{DATE}_results_NMF.csv")
-    # SENTIDIFF_PERC_THRES = 0.2
-
-
-    # =====================================================================================
-    # Sentiment Analysis
+    # TODO: How do I determine the sentiment diff threshold? WE WANT SENTIDIFF THAT ARE LOW!
+    # DATA = pd.read_csv(f"{PATH}ssm_results_nmf.csv")
+    # SENTIDIFF_PERC_THRES = 0.1
+    # ================================================================================
+    # ----- Sentiment Analysis
     startTime = time.time()
     sid = SentimentIntensityAnalyzer()
     senti = pd.DataFrame(columns="pos neu neg compound".split())
@@ -35,27 +38,25 @@ def sentiAn(DATA, SENTIDIFF_PERC_THRES):
 
     # ----- Concat sentiments with results
     speeches = DATA['Speech']
-    DATA = DATA.drop('Speech', axis=1)
-    DATA['Senti_pos'] = senti['pos']
-    DATA['Senti_neu'] = senti['neu']
-    DATA['Senti_neg'] = senti['neg']
-    DATA['Senti_comp'] = senti['compound']
-    DATA['Speech'] = speeches
+    results = DATA.drop('Speech', axis=1)
+    results['Senti_pos'] = senti['pos']
+    results['Senti_neu'] = senti['neu']
+    results['Senti_neg'] = senti['neg']
+    results['Senti_comp'] = senti['compound']
+    results['Speech'] = speeches
+    results.sort_index(inplace=True)
 
-
-    # =====================================================================================
-    # Generate sentiDiff of all speeches with the same topic
+    # ================================================================================
+    # ----- Generate sentiDiff of all speeches with the same topic
     print("\nComputing sentiment difference...")
     sentiDiff = []
-    for i in range(len(DATA)):
-        row_i = DATA.iloc[i]
+    for i, row_i in results.iterrows():
         p1 = row_i['Person']
-        t1 = row_i['Topic_nmf']
+        t1 = row_i['Topic']
         s1 = row_i['Senti_comp']
-        for j in range(i+1, len(DATA)):
-            row_j = DATA.iloc[j]
+        for j, row_j in results[:i+1].iterrows():
             p2 = row_j['Person']
-            t2 = row_j['Topic_nmf']
+            t2 = row_j['Topic']
             s2 = row_j['Senti_comp']
             # Compared speeches cannot be from the same person
             # Compared speeches must be of the same topic
@@ -63,27 +64,25 @@ def sentiAn(DATA, SENTIDIFF_PERC_THRES):
                 sentiDiff.append(abs(s1-s2))
 
         # Print progress
-        if i % 20 == 0 :
-            print(f"{i:{5}} of {len(DATA):{5}}\t{score}")
+        if i % 20 == 0:
+            print(f"{i:{5}} of {len(results):{5}}\t{score}")
 
-    # Organise results in dataframe
-    sentiDiff = pd.DataFrame(sentiDiff, columns='Senti_Diff'.split())
-    sentiDiff.sort_values(by='Senti_Diff', ascending=False, inplace=True)
-    # Compute threshold at which to remove speeches with high sentiment
+    # Organise sentiDiff in a dataframe
+    sentiDiff = pd.DataFrame(sentiDiff, columns='sentiDiff'.split())
+    sentiDiff.sort_values(by='sentiDiff', ascending=False, inplace=True)
+    # Compute threshold at which to remove speeches with high sentiment difference
+    # TODO: Need to change the way the threshold is computed here?
     sentiDiff_thres = round(len(sentiDiff)*SENTIDIFF_PERC_THRES)
-    # Only take data below the threshold
-    sentiDiff_sig = sentiDiff[sentiDiff_thres:]
 
     print(f"Sentiment analysis complete!\nAnalysis took {round(time.time()-startTime, 2)}s")
 
-
-    # =====================================================================================
+    # ================================================================================
+    # ----- FOR DEBUGING
     # Save results
-    DATA.to_csv(f"{PATH}ssm_{DATE}_results_NMF_senti.csv", index=False)
-    # Save sentiDiff
-    sentiDiff.to_csv(f"{PATH}distributions/ssm_{DATE}_sentiDiff.csv", index=False)
-    # Save sentiDiff_thres
-    with open(f"{PATH}distributions/ssm_{DATE}_sentiDiffThres.txt", "w") as file:
-        file.write(str(sentiDiff_thres))
+    # results.to_csv(f"{PATH}ssm_results_lda_senti.csv", index=False)
+    # sentiDiff.to_csv(f"{PATH}stats/ssm_sentiDiff.csv", index=False)
+    # with open(f"{PATH}stats/ssm_sentiDiffThres.txt", "w") as file:
+    #     file.write(str(sentiDiff_thres))
+    # ================================================================================
 
-    return DATA, sentiDiff_thres, sentiDiff_sig
+    return results, sentiDiff_thres, sentiDiff

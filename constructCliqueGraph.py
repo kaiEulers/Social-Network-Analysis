@@ -1,11 +1,17 @@
 """
 @author: kaisoon
 """
+import pickle
+import time
+import networkx as nx
+
 def constructCG(G, CLIQUES):
-    import pickle
-    import time
-    import networkx as nx
-    # =====================================================================================
+    """
+    :param G:
+    :param CLIQUES:
+    :return:
+    """
+    # ================================================================================
     # ----- FOR DEBUGGING
     DATE = '2017-12'
     PATH = f"results/{DATE}/"
@@ -14,19 +20,17 @@ def constructCG(G, CLIQUES):
     # G = nx.read_gpickle(f"{PATH}ssm_{DATE}_weightedGraph.gpickle")
     # with open(f"{PATH}ssm_{DATE}_cliques.pickle", "rb") as file:
     #     CLIQUES = pickle.load(file)
-
-
-    # =====================================================================================
-    #  Construct clique graphs
+    # ================================================================================
+    # ----- Construct clique graphs
     startTime = time.time()
     graphNodes = dict(G.nodes)
     CGs = {}
-    CG = nx.Graph()
-    for k,clique in CLIQUES.items():
+    for k, clq in CLIQUES.items():
+        CG = nx.Graph()
         CG.clear()
         # ----- Add nodes
         print(f"Adding nodes for cliqueGraph{k}...")
-        for person in clique:
+        for person in clq:
             CG.add_node(
                 person,
                 party=graphNodes[person]['party'],
@@ -40,27 +44,25 @@ def constructCG(G, CLIQUES):
 
         # ----- Add edges
         print(f"Adding edges for cliqueGraph{k}...")
-        for i in range(len(clique)):
-            p1 = clique[i]
-            for j in range(i+1, len(clique)):
-                p2 = clique[j]
-                # Check that p1 and p2 are not the same people
-                if p1 != p2:
+        for i, p_i in enumerate(clq):
+            for j, p_j in enumerate(clq, start=i+1):
+                # Check that p_i and p_j are not the same people
+                if p_i != p_j:
                     # Get edge data
-                    edgeData = G.get_edge_data(p1, p2)
-                    CG.add_edge(p1, p2, weight=edgeData['weight'], agreedSpeeches=edgeData['agreedSpeeches'])
+                    edgeData = G.get_edge_data(p_i, p_j)
+                    CG.add_edge(p_i, p_j, weight=edgeData['weight'], agreedSpeeches=edgeData['agreedSpeeches'])
 
         CGs[k] = CG
         print(f"All edges of cliqueGraphs successfully added for cliqueGraph{k}\n")
 
 
     print(f"Clique graph construction complete!")
-    print(f"{len(CGs)} were cliques found")
     print(f"Construction took {round(time.time()-startTime, 2)}s")
 
-
-    # =====================================================================================
+    # ================================================================================
+    # ----- FOR DEBUGGING
     # Save clique graph
     nx.write_gpickle(CGs, f"{PATH}ssm_{DATE}_cliqueGraphs.gpickle")
+    # ================================================================================
 
     return CGs

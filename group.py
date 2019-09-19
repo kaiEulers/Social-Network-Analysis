@@ -1,7 +1,6 @@
 """
 @author: kaisoon
 """
-# Functions goes with attempt of sorting nodes by centrality and party
 # =====================================================================================
 def byThres(data, thres):
     """
@@ -20,6 +19,7 @@ def byThres(data, thres):
 
     return grouped
 
+
 def byOrd5(data):
     """
     bySeq5() groups data in five sequential classes
@@ -33,6 +33,7 @@ def byOrd5(data):
     grouped[3] = [k for k, v in data.items() if v >= 0.75]
 
     return grouped
+
 
 # =====================================================================================
 def byNodeAttr(data, groupby):
@@ -53,7 +54,6 @@ def byNodeAttr(data, groupby):
     if groupby not in 'party gender metro'.split():
         raise ValueError('Attribute must be one of the following: Party, Gender, Metro')
 
-
     # ----- Group actors by attribute
     grouped = {}
     # Construct a set of unique groups
@@ -64,33 +64,25 @@ def byNodeAttr(data, groupby):
     for g in groups:
         grouped[g] = [k for (k, v) in data.items() if v == g]
 
-
     # ----- Create colourMap base on the grouping for node colouring and legend labels
     if groupby == 'party':
-        # Using SEABORN default palette for parties
-        # colourMap = {
-        #     'AG': cp.sns['green'],
-        #     'ALP': cp.sns['red'],
-        #     'IND': cp.sns['brown'],
-        #     'KAP': cp.sns['purple'],
-        #     'LP': cp.sns['blue'],
-        #     'Nats': cp.sns['yellow'],
-        # }
         colourMap = {
-            'AG': cp.cbSet1['green'],
-            'ALP': cp.cbSet1['red'],
-            'IND': cp.cbSet1['brown'],
-            'KAP': cp.cbSet1['purple'],
-            'LP': cp.cbSet1['blue'],
+            'AG'  : cp.cbSet1['green'],
+            'ALP' : cp.cbSet1['red'],
+            'CA'  : cp.cbSet1['orange'],
+            'IND' : cp.cbSet1['brown'],
+            'KAP' : cp.cbSet1['purple'],
+            'LP'  : cp.cbSet1['blue'],
             'Nats': cp.cbSet1['yellow'],
         }
         legendMap = {
-            'AG' : "Australian Greens",
+            'AG'  : "Australian Greens",
             'ALP' : "Australian Labor Party",
+            'CA'  : "Central Alliance",
             'IND' : "Independent",
             'KAP' : "Katter's Australian Party",
-            'LP' : "Liberal Party of Australia",
-            'Nats' : "National Party of Australia",
+            'LP'  : "Liberal Party of Australia",
+            'Nats': "National Party of Australia",
         }
         return grouped, colourMap, legendMap
     elif groupby == 'gender':
@@ -113,10 +105,10 @@ def byNodeAttr(data, groupby):
             4: cp.cbYlGn[3]
         }
         legendMap = {
-            1 : 'Zone 1',
-            2 : 'Zone 2',
-            3 : 'Zone 3',
-            4 : 'Zone 4',
+            1: 'Zone 1',
+            2: 'Zone 2',
+            3: 'Zone 3',
+            4: 'Zone 4',
         }
         return grouped, colourMap, legendMap
     else:
@@ -201,8 +193,8 @@ def byCent4NodeLabel(data, thres):
 
     grouped = byThres(data, thres)
     # Construct dict to reformat names from 'first last' to 'first\nlast'
-    low = {n : n.replace(' ', '\n') for n in grouped[0]}
-    high = {n : n.replace(' ', '\n') for n in grouped[1]}
+    low = {n: n.replace(' ', '\n') for n in grouped[0]}
+    high = {n: n.replace(' ', '\n') for n in grouped[1]}
     grouped[0] = low
     grouped[1] = high
 

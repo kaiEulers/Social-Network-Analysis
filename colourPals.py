@@ -10,10 +10,17 @@ sns = dict(zip(
     sns.color_palette().as_hex()
 ))
 
+# ColourBrewer Qualitative Paired
+cbPaired = dict(zip(
+    'lightBlue blue lightGreen green pink red lightOrange orange lightPurple purple yellow brown'.split(),
+    ['#a6cee3', '#1f78b4', '#b2df8a', '#33a02c', '#fb9a99', '#e31a1c', '#fdbf6f', '#ff7f00',
+     '#cab2d6', '#6a3d9a', '#ffff99', '#b15928']
+))
+
 # ColourBrewer Qualitative Dark2
 cbDark2 = dict(zip(
     'blueGreen orange purple pink green yellow brown gray'.split(),
-    ['#1b9e77','#d95f02','#7570b3','#e7298a','#66a61e','#e6ab02','#a6761d','#666666']
+    ['#1b9e77', '#d95f02', '#7570b3', '#e7298a', '#66a61e', '#e6ab02', '#a6761d', '#666666']
 ))
 
 # ColourBrewer Qualitative Set1
@@ -39,8 +46,9 @@ cbPas1 = dict(zip(
 
 # ColourBrewer Sequential Palette
 # Yellow to Green
-cbYlGn = ['#ffffcc','#c2e699','#78c679','#238443']
+cbYlGn = ['#ffffcc', '#c2e699', '#78c679', '#238443']
 
 # ColourBrewer Sequential Palette
 # Grays
-cbGrays = ['#ffffff','#f0f0f0','#d9d9d9','#bdbdbd','#969696','#737373','#525252','#252525','#000000']
+cbGrays = ['#ffffff', '#f0f0f0', '#d9d9d9', '#bdbdbd', '#969696', '#737373', '#525252',
+           '#252525', '#000000']

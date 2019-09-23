@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 import networkx as nx
 import pickle
-import time
+import time as tm
 
 # TODO: Eventually, save statements have to be removed such that variables are saved outside of function!
 def constructG(DATA, SENTIDIFF_THRES):
@@ -26,7 +26,7 @@ def constructG(DATA, SENTIDIFF_THRES):
     #     SENTIDIFF_THRES = int(file.read())
     # ================================================================================
     # ----- Construct Weighted Graph
-    startTime = time.time()
+    startTime = tm.perf_counter()
     G = nx.Graph()
     G.clear()
 
@@ -154,8 +154,9 @@ def constructG(DATA, SENTIDIFF_THRES):
     # Add clique information to node attribute
     nx.set_node_attributes(G, cliqueNum, 'cliques')
 
+    dur = tm.gmtime(tm.perf_counter() - startTime)
     print(f"\nGraph construction complete!")
-    print("Construction took {round(time.time()-startTime, 2)}s")
+    print(f"Construction took {dur.tm_sec}s")
     print(f"{len(cliques)} cliques found")
     # Print percentage of edges removed by threshold
 

@@ -4,40 +4,37 @@
 # %% Template for main program
 import os
 import pickle
-import pandas as pd
-import matplotlib.pyplot as plt
+from datetime import datetime as dt
+import pandas as pd, numpy as np
+import seaborn as sns, matplotlib.pyplot as plt
 import networkx as nx
 import importlib
-import topicMod
-import sentiAnalysis
-import constructGraph
-import constructCliqueGraph
-import drawGraph
-import constructMultiGraph
+import topicMod, sentiAnalysis, constructGraph, constructCliqueGraph, drawGraph, constructMultiGraph
+import miscFuncs as mf
 
 # DATE = '2017-12'
 PATH = f"results/"
 TIME_FRAMES = '2004 2012 2013 2015 2016 2017'.split()
-data = pd.read_csv(f"data/ssm_rel.csv")
+data = pd.read_csv(f"data/ssm_rel_lemma.csv")
+
 
 # %% ----- Topic Modelling
 importlib.reload(topicMod)
 # Parameters for Topic Modelling
-nTOPICS = 4
+nTOPICS = 6
 nWORDS = 10
-COEFFMAX_PERC_THRES = 0.1
-COEFFDIFF_PERC_THRES = 0.1
+COEFFMAX_STD = -1.5
+COEFFDIFF_STD = -1.5
 # Select between 'nmf' or 'lda' topic modelling
 METHOD = 'nmf'
 
-results_topicMod, topics, coeffMax, coeffDiff = topicMod.model(data, nTOPICS, nWORDS, COEFFMAX_PERC_THRES, COEFFDIFF_PERC_THRES, method=METHOD)
-len(results_topicMod)
+results_topicMod, topics, coeffPrps_thres, coeffPrps = topicMod.model(data, nTOPICS, nWORDS, COEFFMAX_STD, COEFFDIFF_STD, METHOD=METHOD, TRANSFORM_METHOD='box-cox' ,PLOT=True)
 
 # Save results
 results_topicMod.to_csv(f"{PATH}ssm_results_{METHOD}.csv", index=False)
-topics.to_csv(f"{PATH}ssm_topics_{METHOD}.csv")
-coeffMax.to_csv(f"{PATH}stats/ssm_topicCoeffMax_{METHOD}.csv")
-coeffDiff.to_csv(f"{PATH}stats/ssm_topicCoeffDiff_{METHOD}.csv")
+topics.to_csv(f"{PATH}ssm_{nTOPICS}topics_{METHOD}.csv")
+coeffPrps_thres.to_csv(f"{PATH}ssm_thresholds_{METHOD}.csv", header=False)
+coeffPrps.to_csv(f"{PATH}/stats/ssm_topicCoeffPrps_{METHOD}.csv")
 
 # Extract speeches with the highest coeffMax to determine topic name
 speech_id = topics.loc['speechId']
@@ -54,39 +51,83 @@ for i, row in highestCoeffMax.iterrows():
     row_T.to_csv(f"{PATH}realityChecks/highestCoeffMax_{METHOD}/highestCoeffMax_{METHOD}_topic{row['Topic']}.csv", header=True)
 
 
+#%% ----- Name Topics
+
+
 # %% ----- Sentiment Analysis
 importlib.reload(sentiAnalysis)
 # Parameters for Sentiment Analysis
-SENTIDIFF_PERC_THRES = 0.1
+TAIL_THRES = 0.1
+SENTIDIFF_STD = 1.5
 
-results_topicMod_senti, sentiDiff_thres, sentiDiff = sentiAnalysis.sentiAnal(results_topicMod, SENTIDIFF_PERC_THRES)
+results_topicMod_senti, sentiDiff_thres, sentiDiff = sentiAnalysis.analyse(results_topicMod, TAIL_THRES, SENTIDIFF_STD, PLOT=True)
 len(results_topicMod_senti)
 
 # Save results
 results_topicMod_senti.to_csv(f"{PATH}ssm_results_{METHOD}_senti.csv", index=False)
+# TODO: Load "ssm_thresholds_nmf.csv", concat sentiDiff, and save it again
 sentiDiff.to_csv(f"{PATH}stats/ssm_sentiDiff_{METHOD}.csv")
 with open(f"{PATH}ssm_sentiDiffThres_{METHOD}.txt", "w") as file:
     file.write(str(sentiDiff_thres))
 
 
-# %% ----- Construct Graph
+#%% Divide results into time-frames
+importlib.reload(mf)
+
+results = pd.read_csv("results/ssm_results_nmf_senti.csv")
+results = mf.convert2datetime(results)
+
+# ---------------------------------------------------------------------------
+# 2004: Bills from 2004-05-27 to 2004-06-24
+# Howard amended Marriage Act 1961 to be defined as a "union of a man and a woman to the exclusion of all others"
+# ---------------------------------------------------------------------------
+# 2012: Bills from 2012-02-13 to 2012-09-10
+# First time House of Reps declared their position on SSM
+# ---------------------------------------------------------------------------
+# 2013: Bills from 2013-03-18 to 2013-06-24
+# New Zealand legislated for SSM on the 17th April
+# ---------------------------------------------------------------------------
+# 2015: Bills from 2015-06-01 to 2015-11-23
+# US legalised nation-wide SSM on the 26th June
+# ---------------------------------------------------------------------------
+# 2016: Bills from 2016-02-08 to 2016-11-21
+# SSM plebiscite done between 12th Sept and 7th Nov
+# ---------------------------------------------------------------------------
+# 2017: Bills from 2017-09-13 to 2017-12-07
+# Plebiscite results released on 15th Nov. SSM law passed on 7th Dec
+# ---------------------------------------------------------------------------
+resultsDict = {}
+resultsDict['2004'] = results[(results['Date'] >= dt(2004, 5, 27)) & (results['Date'] <= dt(2004, 6, 24))]
+resultsDict['2012'] = results[(results['Date'] >= dt(2012, 2, 13)) & (results['Date'] <= dt(2012, 9, 10))]
+resultsDict['2013'] = results[(results['Date'] >= dt(2013, 3, 18)) & (results['Date'] <= dt(2013, 6, 24))]
+resultsDict['2015'] = results[(results['Date'] >= dt(2015, 6, 1)) & (results['Date'] <= dt(2015, 11, 23))]
+resultsDict['2016'] = results[(results['Date'] >= dt(2016, 2, 8)) & (results['Date'] <= dt(2017, 11, 21))]
+resultsDict['2017'] = results[(results['Date'] >= dt(2017, 9, 13)) & (results['Date'] <= dt(2017, 12, 7))]
+
+for k,v in resultsDict.items():
+    print(f"{k:{10}}{len(v)} speeches")
+    resultsDict[k].to_csv(f"results/{k}/ssm_results_{k}.csv", index=False)
+
+
+# %% ----- Construct Graphs for different timeframes
 importlib.reload(constructGraph)
 
 G_dict = {}
 centDict = {}
 cliquesDict = {}
 
-for k in TIME_FRAMES:
-    results = pd.read_csv(f"{PATH}{k}/ssm_results_{k}.csv")
-    G_dict[k], centDict[k], cliquesDict[k] = constructGraph.constructG(results, sentiDiff_thres)
+for tf in TIME_FRAMES:
+    print(f"========== Constructing graph for {tf} ==========")
+    results = pd.read_csv(f"{PATH}{tf}/ssm_results_{tf}.csv")
+    G_dict[tf], centDict[tf], cliquesDict[tf] = constructGraph.constructG(results, sentiDiff_thres)
 
     # Save graph
-    nx.write_gpickle(G_dict[k], f"{PATH}{k}/ssm_weightedGraph_{k}.gpickle")
+    nx.write_gpickle(G_dict[tf], f"{PATH}{tf}/ssm_weightedGraph_{tf}.gpickle")
     # Save centrality results
-    centDict[k].to_csv(f"{PATH}{k}/ssm_centrality_{k}.csv")
+    centDict[tf].to_csv(f"{PATH}{tf}/ssm_centrality_{tf}.csv")
     # Save clique results
-    with open(f"{PATH}{k}/ssm_cliques_{k}.pickle", "wb") as file:
-        pickle.dump(cliquesDict[k], file)
+    with open(f"{PATH}{tf}/ssm_cliques_{tf}.pickle", "wb") as file:
+        pickle.dump(cliquesDict[tf], file)
 
 
 # %% ----- Draw Graph
@@ -274,3 +315,8 @@ for percThres in coeffDiff_percThres_list:
 fig.savefig(f"{PATH}figures/ssm_{DATE}_graph_by{GROUP.capitalize()}_varyingCoeffDiff.png",
             dpi=300)
 plt.show()
+
+#%%
+data = {'coeffMax' : 0, 'coeffDiff': 1}
+coeffPrps_thres = pd.Series(data)
+coeffPrps_thres['coeffMax']

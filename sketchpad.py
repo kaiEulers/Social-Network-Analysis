@@ -1,18 +1,28 @@
 #%% ----- Imports
+import time as tm
+import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import networkx as nx
 import importlib
-import group
 
-DATE = '2017-12'
+DATE = '2017'
+PATH = f"results/"
+METHOD = 'nmf'
+
 FIG_SiZE = 4
 SUBGRAPH_LAYOUT = 221
-PATH = f"results/{DATE}/"
-data = pd.read_csv(f"{PATH}ssm_{DATE}_results_NMF_senti.csv")
-G = nx.read_gpickle(f"{PATH}ssm_{DATE}_weightedGraph.gpickle")
-CGs = nx.read_gpickle(f"{PATH}ssm_{DATE}_weightedGraph.gpickle")
+
+data = pd.read_csv(f"data/ssm_rel.csv")
+results = pd.read_csv(f"{PATH}ssm_results_NMF_senti.csv")
+G = nx.read_gpickle(f"{PATH}{DATE}/ssm_weightedGraph_{DATE}.gpickle")
+# CGs = nx.read_gpickle(f"{PATH}ssm_cliqueGraph.gpickle")
+
+coeffPrps = pd.read_csv(f"{PATH}stats/ssm_topicCoeffPrps_{METHOD}.csv", index_col=0)
+sentiDiff = pd.read_csv(f"{PATH}stats/ssm_sentiDiff_{METHOD}.csv", index_col=0)
+
+
 
 #%% THIS IS HOW YOU INTERATE THROUGH DATAFRAMES!!
 df = pd.DataFrame(np.array([
@@ -117,5 +127,4 @@ p2 = 'Bill Shorten'
 D2 = TG.get_edge_data(p1, p2)
 # MultiGraph.get_edge_data() returns a dict containing all edges drawn between two actors. De-referencing each edge returns another dict with the atribtue name as key and the its corresponding value
 
-
-
+#%%

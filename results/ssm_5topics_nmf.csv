@@ -1,0 +1,16 @@
+,0,1,2,3,4
+0,vote,amendment,sex,plebiscite,equality
+1,view,freedom,relationship,labor,love
+2,percent,religious,child,debate,lgbtiq
+3,electorate,celebrant,couple,prime,want
+4,change,belief,woman,issue,time
+5,freedom,religion,institution,party,community
+6,survey,protection,man,parliament,year
+7,yes,charity,government,government,vote
+8,issue,law,act,minister,australians
+9,sex,senate,family,australian,friend
+coeffMax,0.256,0.393,0.36,0.414,0.314
+coeffDiff,0.25,0.393,0.36,0.362,0.284
+speechId,48977,49065,13323,45232,48859
+topicCount,48,73,89,48,80
+percentage,14.2,21.6,26.3,14.2,23.7

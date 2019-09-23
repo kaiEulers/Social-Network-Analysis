@@ -2,7 +2,7 @@
 @author: kaisoon
 """
 import pickle
-import time
+import time as tm
 import networkx as nx
 
 def constructCG(G, CLIQUES):
@@ -22,7 +22,7 @@ def constructCG(G, CLIQUES):
     #     CLIQUES = pickle.load(file)
     # ================================================================================
     # ----- Construct clique graphs
-    startTime = time.time()
+    startTime = tm.perf_counter()
     graphNodes = dict(G.nodes)
     CGs = {}
     for k, clq in CLIQUES.items():
@@ -55,9 +55,9 @@ def constructCG(G, CLIQUES):
         CGs[k] = CG
         print(f"All edges of cliqueGraphs successfully added for cliqueGraph{k}\n")
 
-
+    dur = tm.gmtime(tm.perf_counter() - startTime)
     print(f"Clique graph construction complete!")
-    print(f"Construction took {round(time.time()-startTime, 2)}s")
+    print(f"Construction took {dur.tm_sec}s")
 
     # ================================================================================
     # ----- FOR DEBUGGING

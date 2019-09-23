@@ -23,7 +23,13 @@
     <select />
   </component>
   <component name="FavoritesManager">
-    <favorites_list name="COMP90019_project" />
+    <favorites_list name="COMP90019_project">
+      <favorite_root url="file://$PROJECT_DIR$/topicMod.py" type="psiFile" klass="com.intellij.ide.projectView.impl.nodes.PsiFileNode" />
+      <favorite_root url="file://$PROJECT_DIR$/sentiAnalysis.py" type="psiFile" klass="com.intellij.ide.projectView.impl.nodes.PsiFileNode" />
+      <favorite_root url="file://$PROJECT_DIR$/drawGraph.py" type="psiFile" klass="com.intellij.ide.projectView.impl.nodes.PsiFileNode" />
+      <favorite_root url="file://$PROJECT_DIR$/constructGraph.py" type="psiFile" klass="com.intellij.ide.projectView.impl.nodes.PsiFileNode" />
+      <favorite_root url="file://$PROJECT_DIR$/constructCliqueGraph.py" type="psiFile" klass="com.intellij.ide.projectView.impl.nodes.PsiFileNode" />
+    </favorites_list>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -267,6 +273,21 @@
       <workItem from="1568733097341" duration="6494000" />
       <workItem from="1568773570062" duration="3264000" />
       <workItem from="1568785556165" duration="24174000" />
+      <workItem from="1568856128552" duration="1700000" />
+      <workItem from="1568862494551" duration="316000" />
+      <workItem from="1568864778944" duration="8078000" />
+      <workItem from="1568885558413" duration="1391000" />
+      <workItem from="1568911362284" duration="3256000" />
+      <workItem from="1568974422966" duration="19598000" />
+      <workItem from="1569019993982" duration="1371000" />
+      <workItem from="1569022306865" duration="314000" />
+      <workItem from="1569022956148" duration="6405000" />
+      <workItem from="1569050147456" duration="684000" />
+      <workItem from="1569050899298" duration="3874000" />
+      <workItem from="1569056070454" duration="20767000" />
+      <workItem from="1569117445847" duration="34812000" />
+      <workItem from="1569157541922" duration="5300000" />
+      <workItem from="1569203842511" duration="604000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit">
       <created>1565502549553</created>

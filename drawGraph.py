@@ -8,7 +8,8 @@ import networkx as nx
 import importlib
 import group
 import colourPals as cp
-import time
+import time as tm
+
 
 def draw(
         G,
@@ -26,7 +27,19 @@ def draw(
 ):
     """
     :param G: is a graph made from networkx
-    :param groupBy: 'party'|'gender'|'metro'
+    :param groupBy: select from 'party'|'gender'|'metro'
+    :param CENT_PERC_THRES:
+    :param layout:
+    :param title:
+    :param title_fontsize:
+    :param legend:
+    :param legend_font_size:
+    :param node_size:
+    :param node_alpha:
+    :param node_linewidth:
+    :param edge_width:
+    :param node_label:
+    :param font_size:
     :return:
     """
     importlib.reload(group)
@@ -49,8 +62,8 @@ def draw(
     # edge_width = 0.25
     # node_label = True; font_size = 7
     # ================================================================================
-    startTime = time.time()
-    
+    startTime = tm.perf_counter()
+
     # ----- Set up graph layout
     sns.set_style("dark")
     sns.set_context("talk")
@@ -87,7 +100,7 @@ def draw(
         nx.draw_networkx_nodes(
             G, pos,
             nodelist=grouped_party[grp],
-            node_size=node_size * 100,
+            node_size=node_size*100,
             node_color=cMap_nodes[grp],
             alpha=node_alpha,
             edgecolors='black',
@@ -102,7 +115,7 @@ def draw(
     highCent = {k: v for k, v in parties.items() if k in grouped_cent[1]}
     # Group nodes with high centrality by attribute and draw over already drawn graph
     groupedhighCent_party, cMap_nodesHighCent, _ = group.byNodeAttr(highCent, groupBy)
-    for grp in groupedhighCent_party.keys() :
+    for grp in groupedhighCent_party.keys():
         nx.draw_networkx_nodes(
             G, pos,
             nodelist=groupedhighCent_party[grp],
@@ -126,7 +139,7 @@ def draw(
         nx.draw_networkx_edges(
             G, pos,
             edgelist=groupedEdges[grp],
-            width=edge_width * sMap_egdes[grp],
+            width=edge_width*sMap_egdes[grp],
             edge_color=cMap_edges[grp],
             label=legMap_edges[grp]
         )
@@ -137,12 +150,13 @@ def draw(
     if node_label:
         print("Drawing node labels...")
         # Group nodeLabels by actors with high centrality
-        groupedLabels, cMap_labels, sMap_labels, fwMap_labels = group.byCent4NodeLabel(cents, CENT_PERC_THRES)
+        groupedLabels, cMap_labels, sMap_labels, fwMap_labels = group.byCent4NodeLabel(cents,
+                                                                                       CENT_PERC_THRES)
         for grp in groupedLabels.keys():
             nx.draw_networkx_labels(
                 G, pos,
                 labels=groupedLabels[grp],
-                font_size=font_size * sMap_labels[grp],
+                font_size=font_size*sMap_labels[grp],
                 font_color=cMap_labels[grp],
                 font_weight=fwMap_labels[grp],
             )
@@ -150,9 +164,10 @@ def draw(
 
     # ----- Draw legend
     if legend:
-        plt.legend(markerscale=legend_font_size * 0.05, fontsize=legend_font_size)
+        plt.legend(markerscale=legend_font_size*0.05, fontsize=legend_font_size)
 
-    print(f"Drawing completed in {round(time.time()-startTime, 2)}s!")
+    dur = tm.gmtime(tm.perf_counter() - startTime)
+    print(f"Drawing completed in {dur.tm_sec}s!")
 
     # ================================================================================
     # ----- FOR DEBUGGING

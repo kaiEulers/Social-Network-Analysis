@@ -1,0 +1,16 @@
+,0,1,2,3,4,5
+0,plebiscite,equality,sex,person,equality,religious
+1,parliament,love,couples,belief,love,freedom
+2,debate,years,children,act,time,sex
+3,equality,like,government,religious,want,australians
+4,vote,support,legislation,entity,australians,vote
+5,issue,community,institution,amendment,vote,amendments
+6,government,gay,act,law,parliament,freedoms
+7,australians,sex,relationships,section,community,views
+8,australian,time,think,amendments,australia,percent
+9,minister,life,society,relevant,support,change
+coeffMax,0.999,0.999,0.999,1.0,0.999,0.998
+coeffDiff,0.999,0.998,0.999,1.0,0.999,0.998
+speechId,45232,48852,13235,49017,48987,48874
+topicCount,38,16,63,9,105,104
+percentage,11.3,4.8,18.8,2.7,31.3,31.0

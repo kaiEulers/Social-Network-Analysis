@@ -1,11 +1,10 @@
 """
 @author: kaisoon
 """
-import numpy as np
 import pandas as pd
 import networkx as nx
 import pickle
-import time
+import time as tm
 
 def constructMG(DATA, SENTIDIFF_THRES):
     """
@@ -25,7 +24,7 @@ def constructMG(DATA, SENTIDIFF_THRES):
         SENTIDIFF_THRES = int(file.read())
     # ================================================================================
     # ----- Construct Weighted Graph
-    startTime = time.time()
+    startTime = tm.perf_counter()
     MG = nx.MultiGraph()
     MG.clear()
 
@@ -97,6 +96,10 @@ def constructMG(DATA, SENTIDIFF_THRES):
     # Print topicCounts
     for k, v in topicCount.items():
         print(f"Topic:{k}\t\t{v}")
+
+    dur = tm.gmtime(tm.perf_counter() - startTime)
+    print(f"\nMulti-graph construction complete!")
+    print(f"Construction took {dur.tm_sec}s")
 
     # =====================================================================================
     # ----- FOR DEBUGGING

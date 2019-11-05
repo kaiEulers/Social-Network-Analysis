@@ -1,7 +1,6 @@
 """
 @author: kaisoon
 """
-import pickle
 import time as tm
 import networkx as nx
 
@@ -36,7 +35,7 @@ def constructCG(G, CLIQUES):
                 party=graphNodes[person]['party'],
                 gender=graphNodes[person]['gender'],
                 metro=graphNodes[person]['metro'],
-                data=graphNodes[person]['data'],
+                data=graphNodes[person]['text'],
                 centrality=graphNodes[person]['centrality'],
                 cliques=graphNodes[person]['cliques'],
             )
@@ -48,7 +47,7 @@ def constructCG(G, CLIQUES):
             for j, p_j in enumerate(clq, start=i+1):
                 # Check that p_i and p_j are not the same people
                 if p_i != p_j:
-                    # Get edge data
+                    # Get edge text
                     edgeData = G.get_edge_data(p_i, p_j)
                     CG.add_edge(p_i, p_j, weight=edgeData['weight'], agreedSpeeches=edgeData['agreedSpeeches'])
 

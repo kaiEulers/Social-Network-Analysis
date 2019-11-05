@@ -3,6 +3,6 @@
 """
 from topicMod import model
 from sentiAnalysis import analyse
-from constructGraph import constructG
+from constructGraph_OLD import construct
 from constructCliqueGraph import constructCG
 from drawGraph import draw

@@ -35,8 +35,8 @@ def constructMG(DATA, SENTIDIFF_THRES):
         person = row['Person']
         # Only add actor if the actor hasn't already been added
         if not MG.has_node(person):
-            # Construct dataFrame for data attribute of node
-            # Extract all data from the actor
+            # Construct dataFrame for text attribute of node
+            # Extract all text from the actor
             data = DATA[DATA['Person'] == person]
             data.index = range(len(data))
 

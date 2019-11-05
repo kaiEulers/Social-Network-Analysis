@@ -6,7 +6,7 @@ import networkx as nx
 
 DATE = "2017"
 nTOPICS = 5
-data = pd.read_csv(f"data/ssm_rel.csv")
+data = pd.read_csv(f"self/ssm_rel.csv")
 results = pd.read_csv(f"results/ssm_results_nmf_senti.csv")
 topics = pd.read_csv(f"results/ssm_{nTOPICS}topics_nmf.csv", index_col=0)
 G = nx.read_gpickle(f"results/{DATE}/ssm_weightedGraph_{DATE}.gpickle")
@@ -16,24 +16,24 @@ PATH = "results/realityChecks/"
 # Extract all speeches
 data['Speech'].to_csv(f"{PATH}allSpeeches.csv")
 
-# Extract data from graph
+# Extract self from graph
 actorList = np.sort(list(G.node))
 nodeData = dict(G.nodes.data())
 edgeData = list(G.edges.data())
 
 
-#%% Reality check for node data
+#%% Reality check for node self
 actor = rand.choice(actorList)
 print(f"Actor: {actor}")
 actorData = nodeData[actor]['Data'].T
 print(f"{actorData.shape[1]} speeches")
 
-# Save actorData
+# Save topicProfiles
 for n,k in zip(actorData.columns, range(actorData.shape[1])):
     actorData[n].to_csv(f"{PATH}node/{actor.replace(' ', '')}-{k}.csv", header=False)
 
 
-#%% Reality check of edge data
+#%% Reality check of edge self
 i = rand.randint(0, len(edgeData))
 print(f"Edge#: {i}")
 
@@ -71,7 +71,7 @@ speech.to_csv(f"{PATH}speech.csv", header=True)
 id = 41941
 i = 141
 
-# speech = data[data['Speech_id'] == id]
+# speech = self[self['Speech_id'] == id]
 speech = data.loc[i]
 speech = speech.transpose()
 speech.to_csv(f"{PATH}speech.csv", header=True)

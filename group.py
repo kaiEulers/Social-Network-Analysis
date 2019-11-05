@@ -1,36 +1,24 @@
 """
 @author: kaisoon
 """
+import colourPals as cp
+import importlib
+importlib.reload(cp)
 # =====================================================================================
 def byThres(data, thres):
-    """
-    byThres() groups data by a specified threshold
-    :param data: is a dict
-    :param thres: is a threshold between the interval [0, 1] at which the data is grouped by
-    :return: grouped is a dict where key0 contains values above the threshold (inclusive) and key1 contains values below the threshold.
-    """
-    grouped = {}
-    # Find keys below the weight threshold
-    # grouped[0] = [k for (k, v) in data.items() if v < thres]
-    grouped[0] = [k for (k, v) in data.items() if v < thres]
-    # Find keys above the weight threshold
-    # grouped[1] = [k for (k, v) in data.items() if v >= thres]
-    grouped[1] = [k for (k, v) in data.items() if v >= thres]
+    grouped = {0: [k for (k, v) in data.items() if v < thres],
+               1: [k for (k, v) in data.items() if v >= thres]}
 
     return grouped
 
 
-def byOrd5(data):
-    """
-    bySeq5() groups data in five sequential classes
-    :param data: is a dict
-    :return: grouped is a dict
-    """
-    grouped = {}
-    grouped[0] = [k for k, v in data.items() if v >= 0 and v < 0.25]
-    grouped[1] = [k for k, v in data.items() if v >= 0.25 and v < 0.5]
-    grouped[2] = [k for k, v in data.items() if v >= 0.5 and v < 0.75]
-    grouped[3] = [k for k, v in data.items() if v >= 0.75]
+def byOrd4(data):
+    grouped = {
+        0: [k for k, v in data.items() if 0 < v < 0.25],
+        1: [k for k, v in data.items() if 0.5 <= v < 0.75],
+        2: [k for k, v in data.items() if 0.75 <= v < 0.875],
+        3: [k for k, v in data.items() if v >= 0.875]
+    }
 
     return grouped
 
@@ -39,20 +27,15 @@ def byOrd5(data):
 def byNodeAttr(data, groupby):
     """
     byNodeAttr() group nodes in a graph according to its attribute
-    :param G is a graph constructed with networkx
+    :param data: is a dict
     :param groupby is a String chosen from the following [Party, Gender, Metro]
     Returns 2 dicts and a list
     :returns grouped is a dict of each attributes mapped to all actors associated with that attribute
     :returns colouMap is a dict of the colour-map of grouped edges. The colour-map is used to colour the network graph.
     :returns legendMap is a dict of legend names used for the network graph
     """
-    import colourPals as cp
-    import importlib
-    importlib.reload(cp)
-
     # ----- Catch invalid input error
-    if groupby not in 'party gender metro'.split():
-        raise ValueError('Attribute must be one of the following: Party, Gender, Metro')
+    assert groupby in 'party gender metro'.split(), 'Attribute must be one of the following: Party, Gender, Metro'
 
     # ----- Group actors by attribute
     grouped = {}
@@ -67,13 +50,14 @@ def byNodeAttr(data, groupby):
     # ----- Create colourMap base on the grouping for node colouring and legend labels
     if groupby == 'party':
         colourMap = {
-            'AG'  : cp.cbSet1['green'],
-            'ALP' : cp.cbSet1['red'],
-            'CA'  : cp.cbSet1['orange'],
+            'AG'  : '#39B54A',
+            'ALP' : '#DE3533',
+            'CA'  : '#FF7400',
             'IND' : cp.cbSet1['brown'],
-            'KAP' : cp.cbSet1['purple'],
-            'LP'  : cp.cbSet1['blue'],
-            'Nats': cp.cbSet1['yellow'],
+            'KAP': cp.cbSet1['purple'],
+            # 'LP' : '#1B46A5',
+            'LP'  : cp.sns['blue'],
+            'Nats': '#FEF032',
         }
         legendMap = {
             'AG'  : "Australian Greens",
@@ -88,12 +72,12 @@ def byNodeAttr(data, groupby):
     elif groupby == 'gender':
         # Using COLOURBREWER SET1 palette for gender. Pink for women, blue for men.
         colourMap = {
-            0: cp.cbSet1['pink'],
-            1: cp.cbSet1['blue']
+            'Female': cp.cbSet2['pink'],
+            'Male': cp.cbSet2['blue']
         }
         legendMap = {
-            0: 'Female',
-            1: 'Male',
+            'Female': 'Female',
+            'Male': 'Male',
         }
         return grouped, colourMap, legendMap
     elif groupby == 'metro':
@@ -119,18 +103,14 @@ def byNodeAttr(data, groupby):
 def byNodeCent(data, thres):
     """
     byNodeAttr() group nodes in a graph according to its attribute
-    :param G is a graph constructed with networkx
+    :param data: is a dict
     Returns 2 dicts and a list
     :returns grouped is a dict of each attributes mapped to all actors associated with that attribute
     :returns colouMap is a dict of the colour-map of grouped edges. The colour-map is used to colour the network graph.
     :returns legendMap is a dict of legend names used for the network graph
     """
-    import colourPals as cp
-    import importlib
-    importlib.reload(cp)
-
     # ----- Group actors by attribute
-    # Split data at centrality threshold
+    # Split text at centrality threshold
     grouped = byThres(data, thres)
 
     return grouped
@@ -145,26 +125,22 @@ def byEdgeWeight(data):
     :returns scaleMap
     :returns legendMap
     """
-    import colourPals as cp
-    import importlib
-    importlib.reload(cp)
-
     # Group edges by threshold
-    grouped = byOrd5(data)
+    grouped = byOrd4(data)
 
     # Maps colour of edges grouped by weights
     colourMap = {
-        0: cp.cbGrays[5],
-        1: cp.cbGrays[6],
-        2: cp.cbGrays[7],
-        3: cp.cbGrays[8],
+        0: cp.cbGrays[3],
+        1: cp.cbGrays[4],
+        2: cp.cbGrays[5],
+        3: cp.cbGrays[6],
     }
     # Maps scaling factor of edge widths grouped by weights
     scaleMap = {
         0: 1,
-        1: 2,
-        2: 4,
-        3: 7,
+        1: 1.5,
+        2: 2,
+        3: 3,
     }
     legendMap = {
         0: '1st Quartile',
@@ -180,23 +156,17 @@ def byEdgeWeight(data):
 def byCent4NodeLabel(data, thres):
     """
     byNodeCent() group nodes in a graph according to its centrality
-    :param G: is a graph constructed with networkx
-    :param thres: is a threshold between the interval [0, 1] at which the data is grouped by
+    :param data: is a dict
+    :param thres: is a threshold between the interval [0, 1] at which the text is grouped by
     :return: grouped is a dict. Key0 contains edges above the weight threshold (inclusive). Key1 contains edges below the weight threshold.
     :returns colouMap
     :returns scaleMap
     :returns fontWeightMap
     """
-    import colourPals as cp
-    import importlib
-    importlib.reload(cp)
-
     grouped = byThres(data, thres)
     # Construct dict to reformat names from 'first last' to 'first\nlast'
-    low = {n: n.replace(' ', '\n') for n in grouped[0]}
-    high = {n: n.replace(' ', '\n') for n in grouped[1]}
-    grouped[0] = low
-    grouped[1] = high
+    grouped[0] = {n: n.replace(' ', '\n') for n in grouped[0]}
+    grouped[1] = {n: n.replace(' ', '\n') for n in grouped[1]}
 
     # Maps colour of node label
     colourMap = {
